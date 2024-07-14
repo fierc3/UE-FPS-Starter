@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
+#include "LogHelper.h"
 
 AFPSProjectile::AFPSProjectile() 
 {
@@ -36,7 +37,17 @@ void AFPSProjectile::BeginPlay()
 	Super::BeginPlay();
 
 	FTimerHandle TimerHandle;
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AFPSProjectile::Explode, 3.0f, false);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AFPSProjectile::EndProjectile, 3.0f, false);
+}
+
+void AFPSProjectile::EndProjectile()
+{
+	if (this->ShouldExplode) {
+		this->Explode();
+	}
+	else {
+		Destroy();
+	}
 }
 
 void AFPSProjectile::Explode()
@@ -77,6 +88,13 @@ void AFPSProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 			MatInst->SetVectorParameterValue("Color", FLinearColor::MakeRandomColor());
 		}
 
-		Explode();
+		this->EndProjectile();
+		return;
 	}
+	
+	if (!ProjectileMovement->bShouldBounce) {
+		LogHelper::PrintLog("Hit Something: ");
+		this->EndProjectile();
+	}
+
 }

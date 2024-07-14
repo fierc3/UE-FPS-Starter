@@ -71,7 +71,7 @@ public:
 
 	/** Projectile class to spawn */
 	UPROPERTY(EditDefaultsOnly, Category="Projectile")
-	TSubclassOf<AFPSProjectile> ProjectileClass;
+	TArray<TSubclassOf<AFPSProjectile>> ProjectileClass;
 
 	/** Sound to play each time we fire */
 	UPROPERTY(EditDefaultsOnly, Category="Gameplay")
@@ -83,6 +83,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
 	UParticleSystem* MuzzleFlash;
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void ChangeProjectile(int index);
+	
 
 	virtual void Landed(const FHitResult& Hit) override;
 
@@ -108,5 +112,7 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return CameraComponent; }
 
+private:
+	int currentWeapon = 0;
 };
 

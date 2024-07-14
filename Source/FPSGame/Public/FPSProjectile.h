@@ -29,9 +29,14 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
 	UParticleSystem* ExplosionFX;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
+	bool ShouldExplode;
 
 	UFUNCTION()
-	void Explode();
+	void Explode();	
+	
+	UFUNCTION()
+	void EndProjectile();
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BlueprintExplode();

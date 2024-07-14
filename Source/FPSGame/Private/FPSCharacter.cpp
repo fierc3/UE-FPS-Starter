@@ -57,6 +57,11 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 }
 
 
+void AFPSCharacter::ChangeProjectile(int index)
+{
+	this->currentWeapon = index;
+}
+
 void AFPSCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
@@ -105,7 +110,7 @@ void AFPSCharacter::Fire()
 	LogHelper::PrintLog(TEXT("Fire Called"));
 
 	// try and fire a projectile
-	if (ProjectileClass)
+	if (ProjectileClass[this->currentWeapon])
 	{
 		// Grabs location from the mesh that must have a socket called "Muzzle" in his skeleton
 		FVector MuzzleLocation = GunMeshComponent->GetSocketLocation("Muzzle");
@@ -118,7 +123,7 @@ void AFPSCharacter::Fire()
 		ActorSpawnParams.Instigator = this;
 
 		// spawn the projectile at the muzzle
-		GetWorld()->SpawnActor<AFPSProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, ActorSpawnParams);
+		GetWorld()->SpawnActor<AFPSProjectile>(ProjectileClass[this->currentWeapon], MuzzleLocation, MuzzleRotation, ActorSpawnParams);
 	}
 
 	UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
