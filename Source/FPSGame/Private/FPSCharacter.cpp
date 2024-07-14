@@ -11,6 +11,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Animation/AnimSequence.h"
+#include "LogHelper.h"
 
 
 AFPSCharacter::AFPSCharacter()
@@ -87,8 +88,9 @@ void AFPSCharacter::OnJumped_Implementation()
 
 void AFPSCharacter::Crouch()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Crouch Called"));
-	
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Crouch Called"));
+	LogHelper::PrintLog(TEXT("Crouch Called"));
+
 	if (Super::bIsCrouched)
 	{
 		Super::UnCrouch(false);
@@ -100,7 +102,8 @@ void AFPSCharacter::Crouch()
 
 void AFPSCharacter::Fire()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Fire Called"));
+	LogHelper::PrintLog(TEXT("Fire Called"));
+
 	// try and fire a projectile
 	if (ProjectileClass)
 	{
@@ -148,6 +151,7 @@ void AFPSCharacter::LookInput(const FInputActionValue& InputValue)
 	// Combined input from look up/down (X) and left/right (Y)
 	FVector2d LookValue = InputValue.Get<FVector2d>();
 	
-	AddControllerYawInput(LookValue.X);
-	AddControllerPitchInput(LookValue.Y);
+	float lookScale = 0.25;
+	AddControllerYawInput(LookValue.X * lookScale);
+	AddControllerPitchInput(LookValue.Y	* lookScale);
 }
