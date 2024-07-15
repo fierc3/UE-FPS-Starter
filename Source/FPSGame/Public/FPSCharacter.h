@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "CooldownHelper.h"
 
 // Included for struct FInputActionInstance (Enhanced Input)
 #include "InputAction.h"
@@ -93,6 +94,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	int GetCurrentProjectile();
 
+	UFUNCTION(BlueprintCallable, Category = "Dash")
+	UCooldownHelper* GetDashCooldown();
+
 	virtual void Landed(const FHitResult& Hit) override;
 
 	virtual void OnJumped_Implementation() override;
@@ -113,10 +117,17 @@ protected:
 	void Dash();
 
 	UPROPERTY(EditAnywhere, Category = "Dash")
-		float DashDistance = 1000.0f;
+	float DashDistance = 1000.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Dash")
-		float DashSpeed = 1000.0f;
+	float DashSpeed = 1000.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Dash")
+	UCooldownHelper* DashCooldown;
+
+	UPROPERTY(EditAnywhere, Category = "Dash")
+	float DashCooldownInSeconds = 1.0f;
+
 
 public:
 	/** Returns Mesh1P subobject **/

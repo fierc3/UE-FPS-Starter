@@ -48,12 +48,18 @@ void AFPSHUD::DrawHUD()
 		// Draw the current projectile at the bottom left of the screen
 		FString AmmoText = FString::Printf(TEXT("Projectile: %d"), projectile + 1);
 		FVector2D AmmoPosition(50, Canvas->ClipY - 50); // Adjust the position as needed
-		UFont* font = GEngine->GetLargeFont();
-		// change font here
-		FCanvasTextItem TextItem(AmmoPosition, FText::FromString(AmmoText), font, FLinearColor::White);
+		FCanvasTextItem TextItem(AmmoPosition, FText::FromString(AmmoText), GEngine->GetLargeFont(), FLinearColor::White);
 		// Make it bigger
-		TextItem.Scale = FVector2D(1.5f, 1.5f);
 		Canvas->DrawItem(TextItem);
+
+		// Draw the cooldown state
+		UCooldownHelper* dashCoolDown = PlayerCharacter->GetDashCooldown();	
+		float dashRemaining = dashCoolDown->GetRemainingCooldownTime(GetWorld());
+		FString CooldownText = FString::Printf(TEXT("Dash: %.1f"), dashRemaining);
+		FVector2D CooldownPosition(150, Canvas->ClipY - 50); // Adjust the position as needed
+		FCanvasTextItem CdTextItem(CooldownPosition, FText::FromString(CooldownText), GEngine->GetLargeFont(), dashRemaining > 0.0f ? FLinearColor::Red : FLinearColor::Green);
+		// Make it bigger
+		Canvas->DrawItem(CdTextItem);
 	}
 
 }

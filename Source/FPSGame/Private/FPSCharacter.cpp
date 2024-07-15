@@ -13,6 +13,7 @@
 #include "Animation/AnimSequence.h"
 #include "LogHelper.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "CooldownHelper.h"
 
 
 AFPSCharacter::AFPSCharacter()
@@ -116,9 +117,21 @@ void AFPSCharacter::Dash()
 {
 	UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();
 	if (CharacterMovementComponent) {
+		UCooldownHelper* CooldownHelper = GetDashCooldown();
+
+		if (CooldownHelper->IsCooldownActive()) { // exit if cooldown is active
+			return;
+		}
 		FVector DashDirection  = CharacterMovementComponent->GetLastInputVector().GetSafeNormal();
 		int modifier = CharacterMovementComponent->IsFalling() ? 0 : 1;
 		LaunchCharacter(DashDirection * DashDistance * DashSpeed * modifier, true, true);
+
+
+		if (!CooldownHelper->IsCooldownActive() && modifier != 0)
+		{
+			// Start Dash Cooldown
+			CooldownHelper->StartCooldown(GetWorld());
+		}
 	}
 }
 
@@ -176,4 +189,14 @@ void AFPSCharacter::LookInput(const FInputActionValue& InputValue)
 	float lookScale = 0.25;
 	AddControllerYawInput(LookValue.X * lookScale);
 	AddControllerPitchInput(LookValue.Y	* lookScale);
+}
+
+UCooldownHelper* AFPSCharacter::GetDashCooldown()
+{
+	if (!DashCooldown)
+	{
+		DashCooldown = NewObject<UCooldownHelper>();
+		DashCooldown->Initialize(DashCooldownInSeconds); // Set the cooldown duration to 5 seconds
+	}
+	return DashCooldown;
 }
