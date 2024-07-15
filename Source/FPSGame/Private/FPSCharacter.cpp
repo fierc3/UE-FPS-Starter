@@ -62,6 +62,11 @@ void AFPSCharacter::ChangeProjectile(int index)
 	this->currentWeapon = index;
 }
 
+int AFPSCharacter::GetCurrentProjectile()
+{
+	return this->currentWeapon;
+}
+
 void AFPSCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);

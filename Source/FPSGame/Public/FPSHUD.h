@@ -2,6 +2,7 @@
 
 #pragma once 
 
+#include "FPSCharacter.h"
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "FPSHUD.generated.h"
@@ -22,8 +23,14 @@ public:
 
 	AFPSHUD();
 
+	virtual void BeginPlay() override;
+	
 	/** Primary draw call for the HUD */
 	virtual void DrawHUD() override;
+
+private:
+	
+	AFPSCharacter* PlayerCharacter;
 
 };
 

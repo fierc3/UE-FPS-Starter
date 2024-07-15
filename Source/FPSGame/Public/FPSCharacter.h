@@ -86,7 +86,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void ChangeProjectile(int index);
-	
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	int GetCurrentProjectile();
 
 	virtual void Landed(const FHitResult& Hit) override;
 
