@@ -12,6 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Animation/AnimSequence.h"
 #include "LogHelper.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 AFPSCharacter::AFPSCharacter()
@@ -47,6 +48,7 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 	EnhancedInputComponent->BindAction(Input_Fire, ETriggerEvent::Triggered, this, &AFPSCharacter::Fire);
 	EnhancedInputComponent->BindAction(Input_Crouch, ETriggerEvent::Triggered, this, &AFPSCharacter::Crouch);
+	EnhancedInputComponent->BindAction(Input_Dash, ETriggerEvent::Triggered, this, &AFPSCharacter::Dash);
 
 	const APlayerController* PC = GetController<APlayerController>();
 	const ULocalPlayer* LP = PC->GetLocalPlayer();
@@ -107,6 +109,16 @@ void AFPSCharacter::Crouch()
 	}
 	else {
 		Super::Crouch(false);
+	}
+}
+
+void AFPSCharacter::Dash()
+{
+	UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();
+	if (CharacterMovementComponent) {
+		FVector DashDirection  = CharacterMovementComponent->GetLastInputVector().GetSafeNormal();
+		int modifier = CharacterMovementComponent->IsFalling() ? 0 : 1;
+		LaunchCharacter(DashDirection * DashDistance * DashSpeed * modifier, true, true);
 	}
 }
 

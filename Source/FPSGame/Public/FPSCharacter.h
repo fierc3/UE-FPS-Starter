@@ -48,6 +48,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* Input_Crouch;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* Input_Dash;
+
 	/** Pawn mesh: 1st person view  */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Mesh")
 	USkeletalMeshComponent* Mesh1PComponent;
@@ -106,6 +109,14 @@ protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 
 	void Crouch();
+	
+	void Dash();
+
+	UPROPERTY(EditAnywhere, Category = "Dash")
+		float DashDistance = 1000.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Dash")
+		float DashSpeed = 1000.0f;
 
 public:
 	/** Returns Mesh1P subobject **/
