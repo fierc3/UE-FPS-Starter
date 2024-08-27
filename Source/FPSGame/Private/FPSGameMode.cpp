@@ -4,6 +4,8 @@
 #include "FPSHUD.h"
 #include "FPSCharacter.h"
 #include "UObject/ConstructorHelpers.h"
+#include "LogHelper.h"
+#include "EventBusActor.h"
 
 AFPSGameMode::AFPSGameMode()
 {
@@ -13,4 +15,6 @@ AFPSGameMode::AFPSGameMode()
 
 	// use our custom HUD class
 	HUDClass = AFPSHUD::StaticClass();
+	LogHelper::PrintLog(TEXT("Starting game mode"));
+	AEventBusActor::ClearInstance();
 }

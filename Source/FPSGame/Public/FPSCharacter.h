@@ -19,12 +19,15 @@ class AFPSProjectile;
 class USoundBase;
 class UAnimSequence;
 class UParticleSystem;
+class AEventHandlerActor;
 
 
 UCLASS()
 class AFPSCharacter : public ACharacter
 {
 	GENERATED_BODY()
+
+	AEventHandlerActor* EventHandler;
 
 protected:
 
@@ -111,6 +114,8 @@ protected:
 	void LookInput(const FInputActionValue& InputValue);
 	
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+
+	virtual void BeginPlay() override;
 
 	void Crouch();
 	

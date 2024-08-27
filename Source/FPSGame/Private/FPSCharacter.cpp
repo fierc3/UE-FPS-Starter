@@ -14,6 +14,8 @@
 #include "LogHelper.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CooldownHelper.h"
+#include "EventBusActor.h"
+#include "EventHandlerActor.h"
 
 
 AFPSCharacter::AFPSCharacter()
@@ -135,9 +137,54 @@ void AFPSCharacter::Dash()
 	}
 }
 
+void AFPSCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		AEventBusActor* BusInstance = AEventBusActor::GetInstance(World);
+		if (BusInstance)
+		{
+			// Spawn the EventHandler actor
+			FActorSpawnParameters SpawnParams;
+			EventHandler = World->SpawnActor<AEventHandlerActor>(AEventHandlerActor::StaticClass(), SpawnParams);
+			if (EventHandler)
+			{
+				// Set the Bus pointer after spawning
+				EventHandler->SetBus(BusInstance);
+
+				// Register the EventHandler with the BusInstance
+				BusInstance->Register(*EventHandler, FSimpleDelegate::CreateLambda([this]() {
+					if (EventHandler)
+					{
+						EventHandler->Receive(FSimpleDelegate::CreateLambda([]() {
+							LogHelper::PrintLog("Received in FPSCharacter");
+							}));
+					}
+					}));
+			}
+			else
+			{
+				LogHelper::PrintLog(TEXT("Failed to spawn EventHandler actor"));
+			}
+		}
+		else
+		{
+			LogHelper::PrintLog(TEXT("BusInstance is nullptr"));
+		}
+	}
+	else
+	{
+		LogHelper::PrintLog(TEXT("World is nullptr"));
+	}
+}
+
 void AFPSCharacter::Fire()
 {
 	LogHelper::PrintLog(TEXT("Fire Called"));
+	EventHandler->Send();
 
 	// try and fire a projectile
 	if (ProjectileClass[this->currentWeapon])
