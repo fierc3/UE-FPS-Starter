@@ -25,6 +25,7 @@ public:
     AEventHandlerActor(AEventBusActor* InBus);
 
     // Method to send a message
+    UFUNCTION(BlueprintCallable, Category = "EventBus")
     void Send();
 
     // Method to receive a message with a callback
