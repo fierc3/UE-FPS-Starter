@@ -16,6 +16,7 @@
 #include "CooldownHelper.h"
 #include "EventBusActor.h"
 #include "EventHandlerActor.h"
+#include "EventBusHelper.h"
 
 
 AFPSCharacter::AFPSCharacter()
@@ -142,43 +143,9 @@ void AFPSCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	UWorld* World = GetWorld();
-	if (World)
-	{
-		AEventBusActor* BusInstance = AEventBusActor::GetInstance(World);
-		if (BusInstance)
-		{
-			// Spawn the EventHandler actor
-			FActorSpawnParameters SpawnParams;
-			EventHandler = World->SpawnActor<AEventHandlerActor>(AEventHandlerActor::StaticClass(), SpawnParams);
-			if (EventHandler)
-			{
-				// Set the Bus pointer after spawning
-				EventHandler->SetBus(BusInstance);
-
-				// Register the EventHandler with the BusInstance
-				BusInstance->Register(*EventHandler, FSimpleDelegate::CreateLambda([this]() {
-					if (EventHandler)
-					{
-						EventHandler->Receive(FSimpleDelegate::CreateLambda([]() {
-							LogHelper::PrintLog("Received in FPSCharacter");
-							}));
-					}
-					}));
-			}
-			else
-			{
-				LogHelper::PrintLog(TEXT("Failed to spawn EventHandler actor"));
-			}
-		}
-		else
-		{
-			LogHelper::PrintLog(TEXT("BusInstance is nullptr"));
-		}
-	}
-	else
-	{
-		LogHelper::PrintLog(TEXT("World is nullptr"));
-	}
+	EventHandler = EventBusHelper::SetupAndRegisterEventHandler(World, this, []() {
+		LogHelper::PrintLog(TEXT("NEW Received in FPSCharacter"));
+	});
 }
 
 void AFPSCharacter::Fire()

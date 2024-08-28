@@ -27,9 +27,10 @@ class AFPSCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-	AEventHandlerActor* EventHandler;
-
 protected:
+
+	// -- Events -- //
+	AEventHandlerActor* EventHandler;
 
 	// -- Enhanced Input -- //
 
