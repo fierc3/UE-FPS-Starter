@@ -142,16 +142,22 @@ void AFPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	
 	UWorld* World = GetWorld();
-	EventHandler = EventBusHelper::SetupAndRegisterEventHandler(World, this, []() {
-		LogHelper::PrintLog(TEXT("NEW Received in FPSCharacter"));
-	});
+	EventHandler = EventBusHelper::SetupAndRegisterEventHandler(World, this, [](UPsEvent* Event) {});
 }
 
 void AFPSCharacter::Fire()
 {
 	LogHelper::PrintLog(TEXT("Fire Called"));
-	EventHandler->Send();
+	
+	UPsEvent* FireEvent = NewObject<UPsEvent>(this);
+	FireEvent->EventType = EEventType::Hit;
+	FireEvent->Value = 0.0f;
+	FireEvent->Origin = this;
+	FireEvent->Target = nullptr;
+
+	EventHandler->Send(FireEvent);
 
 	// try and fire a projectile
 	if (ProjectileClass[this->currentWeapon])

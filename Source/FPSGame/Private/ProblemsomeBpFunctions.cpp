@@ -7,8 +7,6 @@
 
 AEventHandlerActor* UProblemsomeBpFunctions::RegisterEventBusHandler(AActor* Actor, FMyDelegate Delegate)
 {
-    TFunction<void()> fp = [Delegate]() { Delegate.ExecuteIfBound(); };
-    
-
+    TFunction<void(UPsEvent* Event)> fp = [Delegate](UPsEvent* Event) { Delegate.ExecuteIfBound(Event); };
     return EventBusHelper::SetupAndRegisterEventHandler(Actor->GetWorld(), Actor, fp);
 }

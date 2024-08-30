@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "PsEvent.h"
 #include "EventHandlerActor.generated.h"
 
 class AEventBusActor;
@@ -26,10 +27,10 @@ public:
 
     // Method to send a message
     UFUNCTION(BlueprintCallable, Category = "EventBus")
-    void Send();
+    void Send(UPsEvent* ev);
 
     // Method to receive a message with a callback
-    void Receive(FSimpleDelegate Delegate);
+    void Receive(FEventDelegate Delegate, UPsEvent* ev);
 
     // Method to set the Bus pointer after creation
     void SetBus(AEventBusActor* InBus);

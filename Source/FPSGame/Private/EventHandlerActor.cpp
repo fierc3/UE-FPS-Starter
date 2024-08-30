@@ -4,6 +4,7 @@
 #include "EventHandlerActor.h"
 #include "EventBusActor.h"
 #include "LogHelper.h"
+#include "PsEvent.h"
 
 // Default constructor
 AEventHandlerActor::AEventHandlerActor()
@@ -20,17 +21,19 @@ AEventHandlerActor::AEventHandlerActor(AEventBusActor* InBus)
 }
 
 // Method to send a message
-void AEventHandlerActor::Send()
+void AEventHandlerActor::Send(UPsEvent* ev)
 {
     LogHelper::PrintLog(TEXT("### SENDING"));
-    Bus->SendToAll();  // Send to all registered handlers through the Bus
+    Bus->SendToAll(ev);  // Send to all registered handlers through the Bus
 }
 
 // Method to receive a message with a callback
-void AEventHandlerActor::Receive(FSimpleDelegate Delegate)
+void AEventHandlerActor::Receive(FEventDelegate Delegate, UPsEvent* ev)
 {
-    UE_LOG(LogTemp, Warning, TEXT("### RECEIVED by %d"), ID);
-    Delegate.ExecuteIfBound();  // Execute the provided delegate
+    LogHelper::PrintLog(TEXT("Received EventHandler"));
+    // now we need to execute the custom logic
+
+    Delegate.ExecuteIfBound(ev);
 }
 
 // Method to set the Bus pointer after creation

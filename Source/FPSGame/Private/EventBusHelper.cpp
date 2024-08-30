@@ -5,8 +5,9 @@
 #include "LogHelper.h"
 #include "Engine/World.h"
 #include "GameFramework/Actor.h"
+#include "PsEvent.h"
 
-AEventHandlerActor* EventBusHelper::SetupAndRegisterEventHandler(UWorld* World, AActor* Owner, TFunction<void()> ReceiveFunc)
+AEventHandlerActor* EventBusHelper::SetupAndRegisterEventHandler(UWorld* World, AActor* Owner, TFunction<void(UPsEvent*)> ReceiveFunc)
 {
     LogHelper::PrintLog(TEXT("Registering EventHandler"));
     AEventHandlerActor* EventHandler = nullptr;
@@ -24,12 +25,10 @@ AEventHandlerActor* EventBusHelper::SetupAndRegisterEventHandler(UWorld* World, 
                 EventHandler->SetBus(BusInstance);
 
                 // Register the EventHandler with the BusInstance
-                BusInstance->Register(*EventHandler, FSimpleDelegate::CreateLambda([EventHandler, ReceiveFunc]() {
-                    if (EventHandler)
+                BusInstance->Register(*EventHandler, FEventDelegate::CreateLambda([EventHandler, ReceiveFunc](UPsEvent* Event) {
+                    if (Event)
                     {
-                        EventHandler->Receive(FSimpleDelegate::CreateLambda([ReceiveFunc]() {
-                            ReceiveFunc();
-                            }));
+                        ReceiveFunc(Event);
                     }
                     }));
             }

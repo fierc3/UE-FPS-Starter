@@ -7,7 +7,7 @@
 #include "EventHandlerActor.h"
 #include "ProblemsomeBpFunctions.generated.h"
 
-DECLARE_DYNAMIC_DELEGATE(FMyDelegate);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FMyDelegate, UPsEvent*, Event);
 
 /**
  * 

@@ -38,16 +38,16 @@ void AEventBusActor::ClearInstance() {
     Instance = nullptr;
 }
 
-void AEventBusActor::Register(AEventHandlerActor& Sender, FSimpleDelegate Callback)
+void AEventBusActor::Register(AEventHandlerActor& Sender, FEventDelegate Callback)
 {
     LogHelper::PrintLog(TEXT("Registering handler"));
-    Listeners.Add(TPair<AEventHandlerActor*, FSimpleDelegate>(&Sender, Callback));
+    Listeners.Add(TPair<AEventHandlerActor*, FEventDelegate>(&Sender, Callback));
 }
 
-void AEventBusActor::SendToAll()
+void AEventBusActor::SendToAll(UPsEvent* ev)
 {
     for (auto& Listener : Listeners)
     {
-        Listener.Value.ExecuteIfBound();
+        Listener.Value.ExecuteIfBound(ev);
     }
 }

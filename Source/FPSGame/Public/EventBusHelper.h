@@ -6,9 +6,10 @@
 #include "CoreMinimal.h"
 #include "EventBusActor.h"
 #include "EventHandlerActor.h"
+#include "PsEvent.h"
 
 class FPSGAME_API EventBusHelper
 {
 public:
-    static AEventHandlerActor* SetupAndRegisterEventHandler(UWorld* World, AActor* Owner, TFunction<void()> ReceiveFunc);
+    static AEventHandlerActor* SetupAndRegisterEventHandler(UWorld* World, AActor* Owner, TFunction<void(UPsEvent*)> ReceiveFunc);
 };

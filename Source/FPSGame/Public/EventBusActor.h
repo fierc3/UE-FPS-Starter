@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "PsEvent.h"
 #include "EventBusActor.generated.h"
 
 // Forward declaration of AEventHandler
@@ -21,7 +22,7 @@ private:
     AEventBusActor();
 
     // List of registered event handlers
-    TArray<TPair<AEventHandlerActor*, FSimpleDelegate>> Listeners;
+    TArray<TPair<AEventHandlerActor*, FEventDelegate>> Listeners;
 
 public:
     // Singleton access method
@@ -32,9 +33,8 @@ public:
     virtual void BeginPlay() override;  
 
     // Register an event handler with a callback
-    void Register(AEventHandlerActor& Sender, FSimpleDelegate Callback);
+    void Register(AEventHandlerActor& Sender, FEventDelegate Callback);
 
     // Send event to all registered handlers
-    void SendToAll();
-
+    void SendToAll(UPsEvent* ev);
 };
