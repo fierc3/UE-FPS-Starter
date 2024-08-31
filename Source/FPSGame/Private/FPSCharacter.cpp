@@ -163,8 +163,15 @@ void AFPSCharacter::Fire()
 		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 		ActorSpawnParams.Instigator = this;
 
-		// spawn the projectile at the muzzle
-		GetWorld()->SpawnActor<AFPSProjectile>(ProjectileClass[this->currentWeapon], MuzzleLocation, MuzzleRotation, ActorSpawnParams);
+		AActor* Projectile = GetWorld()->SpawnActor<AFPSProjectile>(ProjectileClass[this->currentWeapon], MuzzleLocation, MuzzleRotation, ActorSpawnParams);
+
+		// TEMP: The gunmesh is a inivisble center point for the gun, the visual gun is more to the right
+		if (Projectile)
+		{
+			// Move the projectile in local space
+			FVector LocalOffset(-20.0f, 50.0f, 0.0f); 
+			Projectile->AddActorLocalOffset(LocalOffset);
+		}
 	}
 
 	UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
