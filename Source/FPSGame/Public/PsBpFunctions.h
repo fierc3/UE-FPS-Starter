@@ -20,4 +20,6 @@ class FPSGAME_API UPsBpFunctions : public UBlueprintFunctionLibrary
 public:
 	UFUNCTION(BlueprintCallable, Category = "PS_Events")
 	static AEventHandlerActor* RegisterEventBusHandler(AActor* Actor, FMyDelegate Delegate);
+	UFUNCTION(BlueprintCallable, Category = "PS_Events")
+	static UPsEvent* CreatePsEvent(EEventType InEventType, float InValue, AActor* InOrigin, AActor* InTarget, FName InAdditionalData);
 };
