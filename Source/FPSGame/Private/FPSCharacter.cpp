@@ -142,21 +142,24 @@ void AFPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
 	UWorld* World = GetWorld();
+	// A EventHandler is Spawned for AFPSCharacter which handles the sending of Events, no callback function was register.
 	EventHandler = EventBusHelper::SetupAndRegisterEventHandler(World, this, [](UPsEvent* Event) {});
+	// The last param ReceiveFunc, can be used to register a callback function for when other Events are sent.
 }
 
 void AFPSCharacter::Fire()
 {
 	LogHelper::PrintLog(TEXT("Fire Called"));
 	
+	// Add details to the events, in this case its Hit event
 	UPsEvent* FireEvent = NewObject<UPsEvent>(this);
 	FireEvent->EventType = EEventType::Hit;
 	FireEvent->Value = 0.0f;
 	FireEvent->Origin = this;
 	FireEvent->Target = nullptr;
 
+	// Send the event to all registered on the Event Bus
 	EventHandler->Send(FireEvent);
 
 	// try and fire a projectile
