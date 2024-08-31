@@ -175,8 +175,10 @@ void AFPSCharacter::Fire()
 		AnimInstance->PlaySlotAnimationAsDynamicMontage(FireAnimation, "Arms", 0.0f);
 	}
 
-	// Play Muzzle FX
-	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, GunMeshComponent, "Muzzle");
+	// Play Muzzle FX with an offset to the right (temp offset)
+	FVector Offset(0.0, 50.0f, -30.0f); // Adjust the values as needed
+	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, GunMeshComponent, "Muzzle", Offset);
+
 }
 
 void AFPSCharacter::MoveInput(const FInputActionValue& InputValue)
