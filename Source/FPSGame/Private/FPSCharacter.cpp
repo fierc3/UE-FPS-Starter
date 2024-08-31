@@ -150,18 +150,6 @@ void AFPSCharacter::BeginPlay()
 
 void AFPSCharacter::Fire()
 {
-	LogHelper::PrintLog(TEXT("Fire Called"));
-	
-	// Add details to the events, in this case its Hit event
-	UPsEvent* FireEvent = NewObject<UPsEvent>(this);
-	FireEvent->EventType = EEventType::Hit;
-	FireEvent->Value = 0.0f;
-	FireEvent->Origin = this;
-	FireEvent->Target = nullptr;
-
-	// Send the event to all registered on the Event Bus
-	EventHandler->Send(FireEvent);
-
 	// try and fire a projectile
 	if (ProjectileClass[this->currentWeapon])
 	{

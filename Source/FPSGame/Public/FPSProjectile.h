@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "EventHandlerActor.h"
 #include "FPSProjectile.generated.h"
 
 
@@ -18,7 +19,6 @@ class AFPSProjectile : public AActor
 	GENERATED_BODY()
 
 protected:
-
 	/** Sphere collision component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= "Components")
 	USphereComponent* CollisionComp;
@@ -40,6 +40,9 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BlueprintExplode();
+
+	// -- Events -- //
+	AEventHandlerActor* EventHandler;
 
 public:
 

@@ -6,6 +6,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 #include "LogHelper.h"
+#include <EventBusHelper.h>
+#include "EnemyBase.h"
 
 AFPSProjectile::AFPSProjectile() 
 {
@@ -38,6 +40,8 @@ void AFPSProjectile::BeginPlay()
 
 	FTimerHandle TimerHandle;
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AFPSProjectile::EndProjectile, 3.0f, false);
+
+	EventHandler = EventBusHelper::SetupAndRegisterEventHandler(GetWorld(), this, [this](UPsEvent* Event) {});
 }
 
 void AFPSProjectile::EndProjectile()
@@ -63,6 +67,18 @@ void AFPSProjectile::Explode()
 
 void AFPSProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	// also check if of type enemy
+	if ((OtherActor) && (OtherActor != this) && OtherActor->IsA(AEnemyBase::StaticClass())) {
+
+		LogHelper::PrintLog(OtherActor->GetName());
+		UPsEvent* HitEvent = NewObject<UPsEvent>(this);
+		HitEvent->EventType = EEventType::Hit;
+		HitEvent->Value = 10.0f;
+		HitEvent->Origin = this;
+		HitEvent->Target = OtherActor;
+		EventHandler->Send(HitEvent);
+	}	
+
 	// Only add impulse and destroy projectile if we hit a physics object
 	if ((OtherActor) && (OtherActor != this) && (OtherComp) && OtherComp->IsSimulatingPhysics())
 	{
@@ -88,13 +104,13 @@ void AFPSProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 			MatInst->SetVectorParameterValue("Color", FLinearColor::MakeRandomColor());
 		}
 
+		// it has hit an physics object, it should end now
 		this->EndProjectile();
 		return;
 	}
 	
 	if (!ProjectileMovement->bShouldBounce) {
-		LogHelper::PrintLog("Hit Something: ");
+		// It's not a bounce projectile, so it should be destroyed after it hitting something for hte first time
 		this->EndProjectile();
 	}
-
 }

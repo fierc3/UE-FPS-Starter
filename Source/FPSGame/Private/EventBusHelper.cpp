@@ -9,7 +9,6 @@
 
 AEventHandlerActor* EventBusHelper::SetupAndRegisterEventHandler(UWorld* World, AActor* Owner, TFunction<void(UPsEvent*)> ReceiveFunc)
 {
-    LogHelper::PrintLog(TEXT("Registering EventHandler"));
     AEventHandlerActor* EventHandler = nullptr;
     if (World)
     {
@@ -17,8 +16,9 @@ AEventHandlerActor* EventBusHelper::SetupAndRegisterEventHandler(UWorld* World, 
         if (BusInstance)
         {
             // Spawn the EventHandler actor
-            FActorSpawnParameters SpawnParams;
-            EventHandler = World->SpawnActor<AEventHandlerActor>(AEventHandlerActor::StaticClass(), SpawnParams);
+            //FActorSpawnParameters SpawnParams;
+            //EventHandler = World->SpawnActor<AEventHandlerActor>(AEventHandlerActor::StaticClass(), SpawnParams);
+            EventHandler = NewObject<AEventHandlerActor>(Owner);
             if (EventHandler)
             {
                 // Set the Bus pointer after spawning
