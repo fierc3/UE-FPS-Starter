@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "EventHandlerActor.h"
-#include "ProblemsomeBpFunctions.generated.h"
+#include "PsBpFunctions.generated.h"
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FMyDelegate, UPsEvent*, Event);
 
@@ -13,7 +13,7 @@ DECLARE_DYNAMIC_DELEGATE_OneParam(FMyDelegate, UPsEvent*, Event);
  * 
  */
 UCLASS()
-class FPSGAME_API UProblemsomeBpFunctions : public UBlueprintFunctionLibrary
+class FPSGAME_API UPsBpFunctions : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 	
