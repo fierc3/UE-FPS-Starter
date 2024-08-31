@@ -8,6 +8,11 @@
 #include "LogHelper.h"
 #include <EventBusHelper.h>
 #include "EnemyBase.h"
+#include "Engine/DecalActor.h"
+#include "Components/DecalComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+
+
 
 AFPSProjectile::AFPSProjectile() 
 {
@@ -78,6 +83,32 @@ void AFPSProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 		HitEvent->Target = OtherActor;
 		EventHandler->Send(HitEvent);
 	}	
+
+	FVector Location = Hit.Location; // Replace with your hit location
+	FRotator Rotation = FRotationMatrix::MakeFromZ(Hit.ImpactNormal).Rotator();
+
+	ADecalActor* DecalActor = GetWorld()->SpawnActor<ADecalActor>(Location, Rotation);
+	if (DecalActor)
+	{
+		// Set the decal material
+		UMaterialInterface* DecalMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Script/Engine.Material'/Game/Decals/BulletDecal.BulletDecal'"));
+		DecalActor->SetDecalMaterial(DecalMaterial);
+		DecalActor->SetLifeSpan(10.0f); // Decal will disappear after 10 seconds
+		// Adjust the decal size
+		FVector DecalSize = FVector(32.0f, 10.0f, 10.0f); // Adjust these values to make the decal smaller
+		DecalActor->GetDecal()->DecalSize = DecalSize;
+
+		/*
+		// Adjust the decal transform to keep it centered
+		FTransform DecalTransform = DecalActor->GetTransform();
+		DecalTransform.SetLocation(FVector(DecalTransform.GetLocation().X, DecalTransform.GetLocation().Y - 5, DecalTransform.GetLocation().Z - 5));
+		DecalActor->SetActorTransform(DecalTransform);
+		*/
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to spawn decal actor"));
+	}
 
 	// Only add impulse and destroy projectile if we hit a physics object
 	if ((OtherActor) && (OtherActor != this) && (OtherComp) && OtherComp->IsSimulatingPhysics())
