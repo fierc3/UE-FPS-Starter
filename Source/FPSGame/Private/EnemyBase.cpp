@@ -19,9 +19,7 @@ void AEnemyBase::BeginPlay()
 	Super::BeginPlay();
 
 	LogHelper::PrintLog(TEXT("Spawning Enemy"));
-	EventHandler = EventBusHelper::SetupAndRegisterEventHandler(GetWorld(), this, [this](UPsEvent* Event) {
-		LogHelper::PrintLog(TEXT("HIT INCOMING"));
-		
+	EventHandler = EventBusHelper::SetupAndRegisterEventHandler(GetWorld(), this, [this](UPsEvent* Event) {		
 		// check if its actually me?
 		if (Event->Target != this) {
 			return;
