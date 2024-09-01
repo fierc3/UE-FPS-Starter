@@ -21,6 +21,12 @@ void AEnemyBase::BeginPlay()
 	LogHelper::PrintLog(TEXT("Spawning Enemy"));
 	EventHandler = EventBusHelper::SetupAndRegisterEventHandler(GetWorld(), this, [this](UPsEvent* Event) {
 		LogHelper::PrintLog(TEXT("HIT INCOMING"));
+		
+		// check if its actually me?
+		if (Event->Target != this) {
+			return;
+		}
+
 		Health -= 10.0f;
 		LogHelper::PrintLog(FString::Printf(TEXT("Health: %f"), Health));
 	});	
@@ -32,7 +38,18 @@ void AEnemyBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	if (Health < 1) {
-		Destroy();
+
+		if (IsDying) {
+			LogHelper::PrintLog(TEXT("Enemy DEAD"));
+			IsDead = true;
+			IsDying = false;
+			// play destroy animation
+			Destroy();
+			return;
+		}
+		LogHelper::PrintLog(TEXT("Enemy DYING"));
+		IsDying = true; 
+		Health = 1; // Or else he instantly goes in to death on next tick
 	}
 }
 
