@@ -122,6 +122,11 @@ protected:
 	
 	void Dash();
 
+	void FireEmptyBullet();
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void Reload();
+
 	UPROPERTY(EditAnywhere, Category = "Dash")
 	float DashDistance = 1000.0f;
 
@@ -134,6 +139,24 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Dash")
 	float DashCooldownInSeconds = 1.0f;
 
+	UPROPERTY(EditAnywhere, Category = "Weapon")
+	int MaxBullets = 6.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Weapon")
+	int CurrentBullets = MaxBullets;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	USoundBase* EmptyFireSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	USoundBase* ReloadSound;
+
+	/** AnimMontage to play each time we reload */
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UAnimSequence* ReloadAnimation;
+
+	UFUNCTION()
+	void OnReloadAnimationFinished();
 
 public:
 	/** Returns Mesh1P subobject **/
@@ -144,5 +167,7 @@ public:
 
 private:
 	int currentWeapon = 0;
+	FTimerHandle ReloadTimerHandle;
+	bool IsReloading = false;
 };
 

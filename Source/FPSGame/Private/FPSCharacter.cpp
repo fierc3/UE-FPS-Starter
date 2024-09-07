@@ -138,6 +138,40 @@ void AFPSCharacter::Dash()
 	}
 }
 
+void AFPSCharacter::FireEmptyBullet()
+{
+	// play empty bullet sound
+	UGameplayStatics::PlaySoundAtLocation(this, EmptyFireSound, GetActorLocation());
+}
+
+void AFPSCharacter::Reload()
+{
+	if (CurrentBullets == MaxBullets
+		|| IsReloading) {
+		return;
+	}
+
+	UAnimInstance* AnimInstance = Mesh1PComponent->GetAnimInstance();
+	if (AnimInstance && ReloadAnimation)
+	{
+		IsReloading = true;
+		AnimInstance->PlaySlotAnimationAsDynamicMontage(ReloadAnimation, "Arms", 0.0f);
+
+		// Get the duration of the animation
+		float AnimationDuration = ReloadAnimation->GetPlayLength();
+
+		// Set a timer to call OnReloadAnimationFinished after the animation duration
+		GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &AFPSCharacter::OnReloadAnimationFinished, AnimationDuration, false);
+	}
+	UGameplayStatics::PlaySoundAtLocation(this, ReloadSound, GetActorLocation());
+}
+
+void AFPSCharacter::OnReloadAnimationFinished()
+{
+	IsReloading = false;
+	CurrentBullets = MaxBullets;
+}
+
 void AFPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -150,6 +184,14 @@ void AFPSCharacter::BeginPlay()
 
 void AFPSCharacter::Fire()
 {
+	if (IsReloading) return; // Can only fire when fully reloaded
+
+	if (CurrentBullets < 1) 
+	{
+		FireEmptyBullet();
+		return;
+	}
+
 	// try and fire a projectile
 	if (ProjectileClass[this->currentWeapon])
 	{
@@ -164,6 +206,7 @@ void AFPSCharacter::Fire()
 		ActorSpawnParams.Instigator = this;
 
 		GetWorld()->SpawnActor<AFPSProjectile>(ProjectileClass[this->currentWeapon], MuzzleLocation, MuzzleRotation, ActorSpawnParams);
+		CurrentBullets -= 1;
 	}
 
 	UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
