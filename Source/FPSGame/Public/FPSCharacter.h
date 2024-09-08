@@ -8,7 +8,7 @@
 
 // Included for struct FInputActionInstance (Enhanced Input)
 #include "InputAction.h"
-
+#include <FPSWeapon.h>
 #include "FPSCharacter.generated.h"
 
 class UInputMappingContext;
@@ -60,10 +60,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Mesh")
 	USkeletalMeshComponent* Mesh1PComponent;
 
-	/** Gun mesh: 1st person view (seen only by self) */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
-	USkeletalMeshComponent* GunMeshComponent;
-
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* CameraComponent;
@@ -74,29 +70,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	TSubclassOf<UCameraShakeBase> JumpCameraShake;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	AFPSWeapon* Weapon;
+
 public:
 	AFPSCharacter();
-
-	/** Projectile class to spawn */
-	UPROPERTY(EditDefaultsOnly, Category="Projectile")
-	TArray<TSubclassOf<AFPSProjectile>> ProjectileClass;
-
-	/** Sound to play each time we fire */
-	UPROPERTY(EditDefaultsOnly, Category="Gameplay")
-	USoundBase* FireSound;
-
-	/** AnimMontage to play each time we fire */
-	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
-	UAnimSequence* FireAnimation;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
-	UParticleSystem* MuzzleFlash;
-
-	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	void ChangeProjectile(int index);
-
-	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	int GetCurrentProjectile();
 
 	UFUNCTION(BlueprintCallable, Category = "Dash")
 	UCooldownHelper* GetDashCooldown();
@@ -106,9 +84,6 @@ public:
 	virtual void OnJumped_Implementation() override;
 
 protected:
-	
-	/** Fires a projectile. */
-	void Fire();
 
 	void MoveInput(const FInputActionValue& InputValue);
 
@@ -118,14 +93,11 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	void Fire();
+
 	void Crouch();
 	
 	void Dash();
-
-	void FireEmptyBullet();
-
-	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	void Reload();
 
 	UPROPERTY(EditAnywhere, Category = "Dash")
 	float DashDistance = 1000.0f;
@@ -139,25 +111,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Dash")
 	float DashCooldownInSeconds = 1.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Weapon")
-	int MaxBullets = 6.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Weapon")
-	int CurrentBullets = MaxBullets;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	USoundBase* EmptyFireSound;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	USoundBase* ReloadSound;
-
-	/** AnimMontage to play each time we reload */
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	UAnimSequence* ReloadAnimation;
-
-	UFUNCTION()
-	void OnReloadAnimationFinished();
-
 public:
 	/** Returns Mesh1P subobject **/
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1PComponent; }
@@ -165,9 +118,6 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return CameraComponent; }
 
-private:
-	int currentWeapon = 0;
-	FTimerHandle ReloadTimerHandle;
-	bool IsReloading = false;
+	AFPSWeapon* GetWeapon() const { return Weapon; }
 };
 

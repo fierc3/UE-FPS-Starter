@@ -34,10 +34,6 @@ AFPSCharacter::AFPSCharacter()
 	Mesh1PComponent->SetRelativeRotation(FRotator(2.0f, -15.0f, 5.0f));
 	Mesh1PComponent->SetRelativeLocation(FVector(0, 0, -160.0f));
 
-	// Create a gun mesh component
-	GunMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
-	GunMeshComponent->CastShadow = false;
-	GunMeshComponent->SetupAttachment(Mesh1PComponent, "GripPoint");
 }
 
 
@@ -60,17 +56,6 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	// Add mappings for our game, more complex games may have multiple Contexts that are added/removed at runtime
 	Subsystem->AddMappingContext(DefaultInputMapping, 0);
-}
-
-
-void AFPSCharacter::ChangeProjectile(int index)
-{
-	this->currentWeapon = index;
-}
-
-int AFPSCharacter::GetCurrentProjectile()
-{
-	return this->currentWeapon;
 }
 
 void AFPSCharacter::Landed(const FHitResult& Hit)
@@ -100,6 +85,11 @@ void AFPSCharacter::OnJumped_Implementation()
 		
 		//UGameplayStatics::PlaySound2D(this, JumpedSound);
 	}
+}
+
+void AFPSCharacter::Fire()
+{
+	GetWeapon()->Fire();
 }
 
 void AFPSCharacter::Crouch()
@@ -138,40 +128,6 @@ void AFPSCharacter::Dash()
 	}
 }
 
-void AFPSCharacter::FireEmptyBullet()
-{
-	// play empty bullet sound
-	UGameplayStatics::PlaySoundAtLocation(this, EmptyFireSound, GetActorLocation());
-}
-
-void AFPSCharacter::Reload()
-{
-	if (CurrentBullets == MaxBullets
-		|| IsReloading) {
-		return;
-	}
-
-	UAnimInstance* AnimInstance = Mesh1PComponent->GetAnimInstance();
-	if (AnimInstance && ReloadAnimation)
-	{
-		IsReloading = true;
-		AnimInstance->PlaySlotAnimationAsDynamicMontage(ReloadAnimation, "Arms", 0.0f);
-
-		// Get the duration of the animation
-		float AnimationDuration = ReloadAnimation->GetPlayLength();
-
-		// Set a timer to call OnReloadAnimationFinished after the animation duration
-		GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &AFPSCharacter::OnReloadAnimationFinished, AnimationDuration, false);
-	}
-	UGameplayStatics::PlaySoundAtLocation(this, ReloadSound, GetActorLocation());
-}
-
-void AFPSCharacter::OnReloadAnimationFinished()
-{
-	IsReloading = false;
-	CurrentBullets = MaxBullets;
-}
-
 void AFPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -180,47 +136,37 @@ void AFPSCharacter::BeginPlay()
 	// A EventHandler is Spawned for AFPSCharacter which handles the sending of Events, no callback function was register.
 	EventHandler = EventBusHelper::SetupAndRegisterEventHandler(World, this, [](UPsEvent* Event) {});
 	// The last param ReceiveFunc, can be used to register a callback function for when other Events are sent.
-}
 
-void AFPSCharacter::Fire()
-{
-	if (IsReloading) return; // Can only fire when fully reloaded
-
-	if (CurrentBullets < 1) 
+	UChildActorComponent* ChildActorComp = Cast<UChildActorComponent>(GetDefaultSubobjectByName(TEXT("Active_Weapon")));
+	if (ChildActorComp)
 	{
-		FireEmptyBullet();
-		return;
+		// Get the child actor from the component
+		AActor* ChildActor = ChildActorComp->GetChildActor();
+		if (ChildActor)
+		{
+			// Use Cast to safely cast the actor to your specific class
+			Weapon = Cast<AFPSWeapon>(ChildActor);
+			if (Weapon)
+			{
+				// Successfully casted, you can now use Weapon
+				Weapon->SetAHolder(this);
+				Weapon->SetMesh1PComponent(Mesh1PComponent);
+				LogHelper::PrintLog("Successfully found Weapon");
+			}
+			else
+			{
+				LogHelper::PrintLog("Failed to cast active Weapon");
+			}
+		}
+		else
+		{
+			LogHelper::PrintLog("Failed to get child actor from component");
+		}
 	}
-
-	// try and fire a projectile
-	if (ProjectileClass[this->currentWeapon])
+	else
 	{
-		// Grabs location from the mesh that must have a socket called "Muzzle" in his skeleton
-		FVector MuzzleLocation = GunMeshComponent->GetSocketLocation("Muzzle");
-		// Use controller rotation which is our view direction in first person
-		FRotator MuzzleRotation = GetControlRotation();
-
-		//Set Spawn Collision Handling Override
-		FActorSpawnParameters ActorSpawnParams;
-		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-		ActorSpawnParams.Instigator = this;
-
-		GetWorld()->SpawnActor<AFPSProjectile>(ProjectileClass[this->currentWeapon], MuzzleLocation, MuzzleRotation, ActorSpawnParams);
-		CurrentBullets -= 1;
+		LogHelper::PrintLog("Failed to find Active_Weapon component");
 	}
-
-	UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-	
-	// Get the animation object for the arms mesh
-	UAnimInstance* AnimInstance = Mesh1PComponent->GetAnimInstance();
-	if (AnimInstance)
-	{
-		AnimInstance->PlaySlotAnimationAsDynamicMontage(FireAnimation, "Arms", 0.0f);
-	}
-
-	// Play Muzzle FX with an offset to the right (temp offset)
-	FVector Offset(0.0, 50.0f, -30.0f); // Adjust the values as needed
-	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, GunMeshComponent, "Muzzle", Offset);
 
 }
 

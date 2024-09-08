@@ -43,8 +43,8 @@ void AFPSHUD::DrawHUD()
 
 	if (PlayerCharacter)
 	{
-		int projectile = PlayerCharacter->GetCurrentProjectile();
-
+		//int projectile = PlayerCharacter->GetWeapon()->GetCurrentProjectile();
+		int projectile = 0;
 		// Draw the current projectile at the bottom left of the screen
 		FString AmmoText = FString::Printf(TEXT("Projectile: %d"), projectile + 1);
 		FVector2D AmmoPosition(50, Canvas->ClipY - 50); // Adjust the position as needed
