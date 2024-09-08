@@ -1,7 +1,7 @@
 # UE-FPS-Starter
 A simplified C++ UE 5 FPS Start Project.
 
-![image](https://github.com/user-attachments/assets/c4e2490b-61a6-4f5f-8e2a-9fb849efd0a0)
+![image](https://github.com/user-attachments/assets/ac66eb21-9416-4858-8e62-b4461c3bf2a1)
 
 
 ## Why share on GitHub?
