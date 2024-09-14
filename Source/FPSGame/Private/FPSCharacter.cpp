@@ -89,6 +89,7 @@ void AFPSCharacter::OnJumped_Implementation()
 
 void AFPSCharacter::Fire()
 {
+	if (IsBlocked) return; // Character is currently blocked and can't shoot
 	GetWeapon()->Fire();
 }
 

@@ -83,6 +83,9 @@ public:
 
 	virtual void OnJumped_Implementation() override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	bool IsBlocked = false;
+
 protected:
 
 	void MoveInput(const FInputActionValue& InputValue);

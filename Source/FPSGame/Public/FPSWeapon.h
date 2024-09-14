@@ -82,16 +82,18 @@ protected:
 
 	/** AnimMontage to play each time we reload */
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-		UAnimSequence* ReloadAnimation;
+	UAnimSequence* ReloadAnimation;
 
 	UFUNCTION()
 	void OnReloadAnimationFinished();
 
+	UPROPERTY(BlueprintReadOnly, Category = "State")
+	bool IsReloading = false;
+
 private:
 	FTimerHandle ReloadTimerHandle;
-	bool IsReloading = false;
 	int CurrentProjectile = 0;
-
+	
 	USkeletalMeshComponent* Mesh1PComponent; // I need a setter for this, in c++ and blueprint
 	ACharacter* AHolder; // setter for this too
 };
