@@ -21,8 +21,11 @@ class FPSGAME_API UCooldownHelper : public UObject
 
     public:
         void Initialize(float InCooldownDuration);
+        UFUNCTION(BlueprintCallable, Category = "Cooldown")
         void StartCooldown(UWorld* World);
+        UFUNCTION(BlueprintCallable, Category = "Cooldown")
         bool IsCooldownActive() const;
+        UFUNCTION(BlueprintCallable, Category = "Cooldown")
         float GetRemainingCooldownTime(UWorld* World) const;
 
     private:

@@ -9,6 +9,7 @@
 // Included for struct FInputActionInstance (Enhanced Input)
 #include "InputAction.h"
 #include <FPSWeapon.h>
+#include "FPSAbility.h"
 #include "FPSCharacter.generated.h"
 
 class UInputMappingContext;
@@ -73,6 +74,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	AFPSWeapon* Weapon;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Ability")
+	TArray<TSubclassOf<AFPSAbility>> AbilityClasses;
+
 public:
 	AFPSCharacter();
 
@@ -102,6 +106,9 @@ protected:
 	
 	void Dash();
 
+	UFUNCTION(BlueprintCallable, Category = "Ability")
+	void Ability();
+
 	UPROPERTY(EditAnywhere, Category = "Dash")
 	float DashDistance = 1000.0f;
 
@@ -116,9 +123,11 @@ protected:
 
 public:
 	/** Returns Mesh1P subobject **/
+	UFUNCTION(BlueprintCallable, Category = "Mesh")
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1PComponent; }
 
 	/** Returns FirstPersonCameraComponent subobject **/
+	UFUNCTION(BlueprintCallable, Category = "Camera")
 	UCameraComponent* GetFirstPersonCameraComponent() const { return CameraComponent; }
 
 	AFPSWeapon* GetWeapon() const { return Weapon; }

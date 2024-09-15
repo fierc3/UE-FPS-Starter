@@ -17,6 +17,7 @@
 #include "EventBusActor.h"
 #include "EventHandlerActor.h"
 #include "EventBusHelper.h"
+#include <FPSAbility.h>
 
 
 AFPSCharacter::AFPSCharacter()
@@ -33,7 +34,6 @@ AFPSCharacter::AFPSCharacter()
 	Mesh1PComponent->CastShadow = false;
 	Mesh1PComponent->SetRelativeRotation(FRotator(2.0f, -15.0f, 5.0f));
 	Mesh1PComponent->SetRelativeLocation(FVector(0, 0, -160.0f));
-
 }
 
 
@@ -129,6 +129,25 @@ void AFPSCharacter::Dash()
 	}
 }
 
+void AFPSCharacter::Ability()
+{
+	if (AbilityClasses[0]) // Temp: Just the first assigned ability, inventory will be added later
+	{
+
+		FVector AbilityLocation = Mesh1PComponent->GetSocketLocation("hand_r");
+		// Use controller rotation which is our view direction in first person
+		FRotator AbilityRotation = this->GetControlRotation();
+
+		//Set Spawn Collision Handling Override
+		FActorSpawnParameters ActorSpawnParams;
+		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+		ActorSpawnParams.Instigator = this;
+
+		AFPSAbility* Ability = GetWorld()->SpawnActor<AFPSAbility>(AbilityClasses[0], AbilityLocation, AbilityRotation, ActorSpawnParams);
+		Ability->TryPlay();
+	}
+}
+
 void AFPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -198,7 +217,7 @@ UCooldownHelper* AFPSCharacter::GetDashCooldown()
 	if (!DashCooldown)
 	{
 		DashCooldown = NewObject<UCooldownHelper>();
-		DashCooldown->Initialize(DashCooldownInSeconds); // Set the cooldown duration to 5 seconds
+		DashCooldown->Initialize(DashCooldownInSeconds);
 	}
 	return DashCooldown;
 }
