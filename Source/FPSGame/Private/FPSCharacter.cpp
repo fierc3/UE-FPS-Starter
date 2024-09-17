@@ -190,6 +190,11 @@ void AFPSCharacter::BeginPlay()
 
 }
 
+TArray<TSubclassOf<AFPSAbility>> AFPSCharacter::GetAbilities()
+{
+	return this->AbilityClasses;
+}
+
 void AFPSCharacter::MoveInput(const FInputActionValue& InputValue)
 {
 	// Combined input from forward/back (X) and left/right (Y)

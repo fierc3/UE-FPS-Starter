@@ -90,6 +90,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	bool IsBlocked = false;
 
+	UFUNCTION(BlueprintCallable, Category = "Ability")
+	TArray<TSubclassOf<AFPSAbility>> GetAbilities();
+
 protected:
 
 	void MoveInput(const FInputActionValue& InputValue);

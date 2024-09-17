@@ -19,6 +19,10 @@ public:
 	~AFPSAbility();
 	bool TryPlay();
 	void Play();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	FString Description;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	FString Name;
 protected:
 	UFUNCTION(BlueprintCallable, Category = "Cooldown")
 	UCooldownHelper* GetTimerCooldown(float defaultCooldown);
