@@ -93,6 +93,7 @@ protected:
 private:
 	FTimerHandle ReloadTimerHandle;
 	int CurrentProjectile = 0;
+	float LastFireTime = 0;
 	
 	USkeletalMeshComponent* Mesh1PComponent; // I need a setter for this, in c++ and blueprint
 	ACharacter* AHolder; // setter for this too

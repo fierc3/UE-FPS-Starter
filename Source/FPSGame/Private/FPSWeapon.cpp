@@ -43,10 +43,18 @@ void AFPSWeapon::Fire()
 		return;
 	}
 
-	// try and fire a projectile
+	// Check if projectile class exists
 	if (ProjectileClass[this->CurrentProjectile])
 	{
-		
+		float  FireRate = ProjectileClass[this->CurrentProjectile].GetDefaultObject()->FireRate;
+
+		if (GetWorld()->GetTimeSeconds() - LastFireTime < FireRate && FireRate > 0 && LastFireTime > 0)
+		{
+			return;
+		}
+
+		LastFireTime = GetWorld()->GetTimeSeconds();
+
 		FVector MuzzleLocation = StaticMeshComponent->GetSocketLocation("Muzzle");
 		// Use controller rotation which is our view direction in first person
 		FRotator MuzzleRotation = this->AHolder->GetControlRotation();

@@ -59,5 +59,8 @@ public:
 
 	/** Returns ProjectileMovement subobject **/
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
+	float FireRate;
 };
 
