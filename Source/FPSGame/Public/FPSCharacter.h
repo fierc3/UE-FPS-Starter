@@ -105,7 +105,13 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaTime) override;
+
 	void Fire();
+
+	void StartShooting();
+
+	void StopShooting();
 
 	void Crouch();
 	
@@ -136,5 +142,8 @@ public:
 	UCameraComponent* GetFirstPersonCameraComponent() const { return CameraComponent; }
 
 	AFPSWeapon* GetWeapon() const { return Weapon; }
+
+private:
+	bool IsShooting = false;
 };
 

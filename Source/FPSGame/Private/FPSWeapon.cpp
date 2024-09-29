@@ -40,6 +40,7 @@ void AFPSWeapon::Fire()
 	if (CurrentBullets < 1)
 	{
 		FireEmptyBullet();
+		Reload();
 		return;
 	}
 

@@ -27,16 +27,6 @@ void AFPSAbility::Play()
 	Post();
 }
 
-UCooldownHelper* AFPSAbility::GetTimerCooldown(float defaultCooldown)
-{
-	if (!TimeCooldown)
-	{
-		TimeCooldown = NewObject<UCooldownHelper>();
-		TimeCooldown->Initialize(defaultCooldown);
-	}
-	return TimeCooldown;
-}
-
 void AFPSAbility::Pre()
 {
 	BlueprintPre();

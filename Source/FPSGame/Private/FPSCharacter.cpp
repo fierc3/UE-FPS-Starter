@@ -46,7 +46,8 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 	// Jump exists in the base class, we dont need our own function
 	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Triggered, this, &ACharacter::Jump);
-	EnhancedInputComponent->BindAction(Input_Fire, ETriggerEvent::Triggered, this, &AFPSCharacter::Fire);
+	EnhancedInputComponent->BindAction(Input_Fire, ETriggerEvent::Started, this, &AFPSCharacter::StartShooting);
+	EnhancedInputComponent->BindAction(Input_Fire, ETriggerEvent::Completed, this, &AFPSCharacter::StopShooting);
 	EnhancedInputComponent->BindAction(Input_Crouch, ETriggerEvent::Triggered, this, &AFPSCharacter::Crouch);
 	EnhancedInputComponent->BindAction(Input_Dash, ETriggerEvent::Triggered, this, &AFPSCharacter::Dash);
 
@@ -56,6 +57,13 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	// Add mappings for our game, more complex games may have multiple Contexts that are added/removed at runtime
 	Subsystem->AddMappingContext(DefaultInputMapping, 0);
+}
+
+void AFPSCharacter::Tick(float DeltaTime) {
+	
+	if (IsShooting) {
+		Fire();
+	}
 }
 
 void AFPSCharacter::Landed(const FHitResult& Hit)
@@ -87,11 +95,24 @@ void AFPSCharacter::OnJumped_Implementation()
 	}
 }
 
-void AFPSCharacter::Fire()
+void AFPSCharacter::Fire() // Input Action
 {
 	if (IsBlocked) return; // Character is currently blocked and can't shoot
 	GetWeapon()->Fire();
 }
+
+void AFPSCharacter::StartShooting()
+{
+	LogHelper::PrintLog("Start");
+	IsShooting = true;
+}
+
+void AFPSCharacter::StopShooting()
+{
+	LogHelper::PrintLog("Stop");
+	IsShooting = false;
+}
+
 
 void AFPSCharacter::Crouch()
 {
