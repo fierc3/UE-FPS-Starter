@@ -23,11 +23,8 @@ public:
 	FString Description;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	FString Name;
-protected:
-	UFUNCTION(BlueprintCallable, Category = "Cooldown")
-	UCooldownHelper* GetTimerCooldown(float defaultCooldown);
-	UPROPERTY(EditAnywhere, Category = "Cooldown")
-	UCooldownHelper* TimeCooldown;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	float Cooldown = -1;
 private:
 	void Pre();
 	void Main();

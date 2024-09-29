@@ -92,6 +92,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Ability")
 	TArray<TSubclassOf<AFPSAbility>> GetAbilities();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
+	float ActiveAbility = 0;
 
 protected:
 

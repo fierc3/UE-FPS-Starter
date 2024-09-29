@@ -129,10 +129,32 @@ void AFPSCharacter::Dash()
 	}
 }
 
+float lastAbilityUsed = 0;
+
 void AFPSCharacter::Ability()
 {
-	if (AbilityClasses[0]) // Temp: Just the first assigned ability, inventory will be added later
+	if (AbilityClasses[ActiveAbility]) // Temp: Just the first assigned ability, inventory will be added later
 	{
+		TSubclassOf<AFPSAbility> AbilityClass = AbilityClasses[ActiveAbility];
+		float Cooldown = AbilityClass.GetDefaultObject()->Cooldown;
+		float Time = GetWorld()->GetTimeSeconds();
+
+		if (Cooldown > 0 && lastAbilityUsed > 0) // larger than 0 so we need to check cooldown
+		{
+			LogHelper::PrintLog(FString::Printf(TEXT("Check: %f"), lastAbilityUsed + Cooldown));
+			if (lastAbilityUsed + Cooldown > Time) // check cooldown
+			{
+				// Ability is on cooldown
+				return;
+			}
+		}
+
+		LogHelper::PrintLog(FString::Printf(TEXT("Time: %f"), Time));
+		lastAbilityUsed = Time;
+
+		// Add your ability activation code here
+		
+		//ability called here
 
 		FVector AbilityLocation = Mesh1PComponent->GetSocketLocation("hand_r");
 		// Use controller rotation which is our view direction in first person
@@ -143,7 +165,7 @@ void AFPSCharacter::Ability()
 		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 		ActorSpawnParams.Instigator = this;
 
-		AFPSAbility* Ability = GetWorld()->SpawnActor<AFPSAbility>(AbilityClasses[0], AbilityLocation, AbilityRotation, ActorSpawnParams);
+		AFPSAbility* Ability = GetWorld()->SpawnActor<AFPSAbility>(AbilityClass, AbilityLocation, AbilityRotation, ActorSpawnParams);
 		Ability->TryPlay();
 	}
 }
@@ -152,6 +174,7 @@ void AFPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	lastAbilityUsed = 0;
 	UWorld* World = GetWorld();
 	// A EventHandler is Spawned for AFPSCharacter which handles the sending of Events, no callback function was register.
 	EventHandler = EventBusHelper::SetupAndRegisterEventHandler(World, this, [](UPsEvent* Event) {});
