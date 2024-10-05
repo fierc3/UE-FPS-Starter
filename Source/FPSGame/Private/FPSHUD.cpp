@@ -10,6 +10,7 @@
 #include "FPSCharacter.h"
 #include "EventBusHelper.h"
 #include "Kismet/GameplayStatics.h"
+#include <EnemyBase.h>
 
 AFPSHUD::AFPSHUD()
 {
@@ -23,6 +24,7 @@ AFPSHUD::AFPSHUD()
 
 	HitmarkerOpacity = 0.0f;
 	HitmarkerScale = 0.65f;
+	HitmarkerColor = FLinearColor::White;
 }
 
 void AFPSHUD::BeginPlay()
@@ -31,9 +33,25 @@ void AFPSHUD::BeginPlay()
 	LogHelper::PrintLog("HUD Started for " + PlayerCharacter->GetName());
 
 	EventHandler = EventBusHelper::SetupAndRegisterEventHandler(GetWorld(), this, [this](UPsEvent* Event) {
-		GetWorld()->GetTimerManager().ClearTimer(HitmarkerTimerHandle);
-		HitmarkerOpacity = 1.0f; // We want to show the hitmarker now
-		GetWorld()->GetTimerManager().SetTimer(HitmarkerTimerHandle, this, &AFPSHUD::UpdateHitmarkerOpacity, 0.05f, true);
+		if (Event->Target->IsA(AEnemyBase::StaticClass())) {
+			AEnemyBase* Enemy = Cast<AEnemyBase>(Event->Target);
+			if (Enemy)
+			{
+				LogHelper::PrintLog(FString::Printf(TEXT("+Enemy: %f"), Enemy->Health));
+
+				if (Enemy->Health < 0) {
+					HitmarkerColor = FLinearColor::Red;
+				}
+				else {
+					HitmarkerColor = FLinearColor::White;
+				}
+
+				GetWorld()->GetTimerManager().ClearTimer(HitmarkerTimerHandle);
+				HitmarkerOpacity = 1.0f; // We want to show the hitmarker now
+				GetWorld()->GetTimerManager().SetTimer(HitmarkerTimerHandle, this, &AFPSHUD::UpdateHitmarkerOpacity, 0.05f, true);
+			}
+		}
+
 	});
 }
 
@@ -61,7 +79,7 @@ void AFPSHUD::DrawHUD()
 	{
 		const FVector2D HitmarkerSize(HitmarkerTex->GetSurfaceWidth() * HitmarkerScale, HitmarkerTex->GetSurfaceHeight() * HitmarkerScale);
 		const FVector2D HitmarkerDrawPosition(Center.X - (HitmarkerSize.X * 0.5f), Center.Y - (HitmarkerSize.Y * 0.5f));
-		FCanvasTileItem HitmarkerItem(HitmarkerDrawPosition, HitmarkerTex->GetResource(), HitmarkerSize, FLinearColor(1.0f, 1.0f, 1.0f, HitmarkerOpacity));
+		FCanvasTileItem HitmarkerItem(HitmarkerDrawPosition, HitmarkerTex->GetResource(), HitmarkerSize, HitmarkerColor.CopyWithNewOpacity(HitmarkerOpacity));
 		HitmarkerItem.BlendMode = SE_BLEND_Translucent;
 		Canvas->DrawItem(HitmarkerItem);
 	}

@@ -21,6 +21,7 @@ protected:
 	UTexture2D* HitmarkerTex;
 	float HitmarkerOpacity;
 	float HitmarkerScale;
+	FLinearColor HitmarkerColor;
 
 public:
 
