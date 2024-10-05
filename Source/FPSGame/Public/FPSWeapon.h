@@ -61,6 +61,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	int GetCurrentProjectile();
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon")
+	void OnWeaponFired();
+
 protected:
 
 	void FireEmptyBullet();

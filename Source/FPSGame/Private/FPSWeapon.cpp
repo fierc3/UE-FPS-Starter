@@ -67,6 +67,8 @@ void AFPSWeapon::Fire()
 
 		GetWorld()->SpawnActor<AFPSProjectile>(ProjectileClass[this->CurrentProjectile], MuzzleLocation, MuzzleRotation, ActorSpawnParams);
 		CurrentBullets -= 1;
+
+		OnWeaponFired(); // So the blueprint can do some stuff after a weapon has been fired
 	}
 
 	UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
