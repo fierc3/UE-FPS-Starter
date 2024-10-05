@@ -18,6 +18,9 @@ protected:
 
 	/** Crosshair asset pointer */
 	UTexture2D* CrosshairTex;
+	UTexture2D* HitmarkerTex;
+	float HitmarkerOpacity;
+	float HitmarkerScale;
 
 public:
 
@@ -29,8 +32,10 @@ public:
 	virtual void DrawHUD() override;
 
 private:
-	
 	AFPSCharacter* PlayerCharacter;
-
+	// -- Events -- //
+	AEventHandlerActor* EventHandler;
+	void UpdateHitmarkerOpacity();
+	FTimerHandle HitmarkerTimerHandle;
 };
 
