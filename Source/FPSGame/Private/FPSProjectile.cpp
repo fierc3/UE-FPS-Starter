@@ -72,7 +72,6 @@ void AFPSProjectile::Explode()
 
 void AFPSProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	// also check if of type enemy
 	if ((OtherActor) && (OtherActor != this) && OtherActor->IsA(AEnemyBase::StaticClass())) {
 
 		LogHelper::PrintLog(OtherActor->GetName());
@@ -81,6 +80,7 @@ void AFPSProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 		HitEvent->Value = 10.0f;
 		HitEvent->Origin = this;
 		HitEvent->Target = OtherActor;
+		HitEvent->HitResult = Hit;
 		EventHandler->Send(HitEvent);
 	}	
 

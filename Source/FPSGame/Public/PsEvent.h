@@ -40,7 +40,11 @@ public:
 
     // Additional data can be added here, depending on the event type
     UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Event")
-        FName AdditionalData;
+    FName AdditionalData;
+
+    // Adds additional hit result data, if available
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Event")
+    FHitResult HitResult;
 
     // Constructor to initialize the event
     UPsEvent()

@@ -44,5 +44,5 @@ public:
 	USkeletalMeshComponent* Mesh1PComponent;
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void BlueprintPostHit();
+	void BlueprintPostHit(UPsEvent* Event);
 };
