@@ -27,6 +27,7 @@ void AEnemyBase::BeginPlay()
 
 		Health -= 10.0f;
 		LogHelper::PrintLog(FString::Printf(TEXT("Health: %f"), Health));
+		BlueprintPostHit();
 	});	
 }
 

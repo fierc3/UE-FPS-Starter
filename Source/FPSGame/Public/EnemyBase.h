@@ -42,4 +42,7 @@ public:
 	/** Pawn mesh: Enemy  */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
 	USkeletalMeshComponent* Mesh1PComponent;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BlueprintPostHit();
 };
