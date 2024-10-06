@@ -45,7 +45,7 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	EnhancedInputComponent->BindAction(Input_Look, ETriggerEvent::Triggered, this, &AFPSCharacter::LookInput);
 
 	// Jump exists in the base class, we dont need our own function
-	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Triggered, this, &AFPSCharacter::PreJump);
 	EnhancedInputComponent->BindAction(Input_Fire, ETriggerEvent::Started, this, &AFPSCharacter::StartShooting);
 	EnhancedInputComponent->BindAction(Input_Fire, ETriggerEvent::Completed, this, &AFPSCharacter::StopShooting);
 	EnhancedInputComponent->BindAction(Input_Crouch, ETriggerEvent::Triggered, this, &AFPSCharacter::Crouch);
@@ -78,6 +78,13 @@ void AFPSCharacter::Landed(const FHitResult& Hit)
 		
 		//UGameplayStatics::PlaySound2D(this, LandedSound);
 	}
+}
+
+void AFPSCharacter::PreJump()
+{
+	if (IsDashing) return;
+
+	Super::Jump();
 }
 
 void AFPSCharacter::OnJumped_Implementation()
@@ -127,28 +134,56 @@ void AFPSCharacter::Crouch()
 		Super::Crouch(false);
 	}
 }
-
+ 
 void AFPSCharacter::Dash()
 {
 	UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();
+
 	if (CharacterMovementComponent) {
 		UCooldownHelper* CooldownHelper = GetDashCooldown();
 
 		if (CooldownHelper->IsCooldownActive()) { // exit if cooldown is active
 			return;
 		}
-		FVector DashDirection  = CharacterMovementComponent->GetLastInputVector().GetSafeNormal();
-		int modifier = CharacterMovementComponent->IsFalling() ? 0 : 1;
-		LaunchCharacter(DashDirection * DashDistance * DashSpeed * modifier, true, true);
+
+		if (CharacterMovementComponent->IsFalling()) {
+			return;
+		}
+
+		FVector DashDirection = CharacterMovementComponent->GetLastInputVector().GetSafeNormal();
+
+		StartLocation = GetActorLocation();
+		EndLocation = StartLocation + (DashDirection * DashDistance);
+		ElapsedTime = 0.0f;
+		//SetActorLocation(NewLocation, true);
+		BlueprintPreDash();
+		GetWorld()->GetTimerManager().SetTimer(DashTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this]() {
+			ElapsedTime += 0.01f;
+			float Alpha = ElapsedTime / DashDuration;
+			FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, Alpha);
+			SetActorLocation(NewLocation, true);
+
+			if (ElapsedTime >= DashDuration)
+			{
+				GetWorld()->GetTimerManager().ClearTimer(DashTimerHandle);
+			}
+		}), 0.01f, true);
 
 
-		if (!CooldownHelper->IsCooldownActive() && modifier != 0)
+		IsDashing = true;
+		FTimerHandle DummyHandle;
+		GetWorld()->GetTimerManager().SetTimer(DummyHandle, FTimerDelegate::CreateWeakLambda(this, [this]() {
+			IsDashing = false;
+		}),  DashDuration, false);
+
+		if (!CooldownHelper->IsCooldownActive())
 		{
 			// Start Dash Cooldown
 			CooldownHelper->StartCooldown(GetWorld());
 		}
 	}
 }
+
 
 float lastAbilityUsed = 0;
 

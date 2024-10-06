@@ -10,6 +10,7 @@
 #include "InputAction.h"
 #include <FPSWeapon.h>
 #include "FPSAbility.h"
+#include <Components/TimelineComponent.h>
 #include "FPSCharacter.generated.h"
 
 class UInputMappingContext;
@@ -117,20 +118,25 @@ protected:
 	
 	void Dash();
 
+	void PreJump();
+
 	UFUNCTION(BlueprintCallable, Category = "Ability")
 	void Ability();
 
 	UPROPERTY(EditAnywhere, Category = "Dash")
-	float DashDistance = 1000.0f;
+	float DashDistance = 1.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Dash")
-	float DashSpeed = 1000.0f;
+	float DashDuration = 0.2f; // Duration of the dash in seconds
 
 	UPROPERTY(EditAnywhere, Category = "Dash")
 	UCooldownHelper* DashCooldown;
 
 	UPROPERTY(EditAnywhere, Category = "Dash")
 	float DashCooldownInSeconds = 1.0f;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BlueprintPreDash();
 
 public:
 	/** Returns Mesh1P subobject **/
@@ -145,5 +151,12 @@ public:
 
 private:
 	bool IsShooting = false;
+
+	// <-- Dash -->
+	bool IsDashing = false;
+	FVector StartLocation;
+	FVector EndLocation;
+	float ElapsedTime = 0.0f;
+	FTimerHandle DashTimerHandle;
 };
 
