@@ -8,7 +8,7 @@
 #include "EnemyBase.generated.h"
 
 UCLASS()
-class FPSGAME_API AEnemyBase : public ACharacter
+class AEnemyBase : public ACharacter
 {
 	GENERATED_BODY()
 

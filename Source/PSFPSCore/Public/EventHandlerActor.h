@@ -10,7 +10,7 @@
 class AEventBusActor;
 
 UCLASS()
-class FPSGAME_API AEventHandlerActor : public AActor
+class AEventHandlerActor : public AActor
 {
     GENERATED_BODY()
 

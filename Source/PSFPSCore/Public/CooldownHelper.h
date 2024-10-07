@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class FPSGAME_API UCooldownHelper : public UObject
+class UCooldownHelper : public UObject
 {
 	GENERATED_BODY()
 

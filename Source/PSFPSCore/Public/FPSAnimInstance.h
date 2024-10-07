@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class FPSGAME_API UFPSAnimInstance : public UAnimInstance
+class  UFPSAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 

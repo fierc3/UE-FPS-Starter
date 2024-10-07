@@ -17,7 +17,7 @@ enum class EEventType : uint8
 };
 
 UCLASS(Blueprintable)
-class FPSGAME_API UPsEvent : public UObject
+class  UPsEvent : public UObject
 {
     GENERATED_BODY() // this is fine apparently :shrug:
 

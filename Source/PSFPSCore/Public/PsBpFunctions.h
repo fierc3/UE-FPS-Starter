@@ -13,7 +13,7 @@ DECLARE_DYNAMIC_DELEGATE_OneParam(FMyDelegate, UPsEvent*, Event);
  * 
  */
 UCLASS()
-class FPSGAME_API UPsBpFunctions : public UBlueprintFunctionLibrary
+class  UPsBpFunctions : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 	

@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class FPSGAME_API AFPSAbility : public AActor
+class  AFPSAbility : public AActor
 {
 	GENERATED_BODY()
 

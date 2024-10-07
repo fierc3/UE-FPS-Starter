@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class FPSGame : ModuleRules
+public class PSFPSCore : ModuleRules
 {
-	public FPSGame(ReadOnlyTargetRules Target) : base(Target)
+	public PSFPSCore(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 

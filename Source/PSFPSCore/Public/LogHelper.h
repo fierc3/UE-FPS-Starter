@@ -7,7 +7,7 @@
 /**
  * 
  */
-class FPSGAME_API LogHelper
+class  LogHelper
 {
 public:
 	LogHelper();

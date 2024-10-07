@@ -3,11 +3,11 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class FPSGameTarget : TargetRules
+public class PSFPSCoreTarget : TargetRules
 {
-	public FPSGameTarget(TargetInfo Target) : base(Target)
+	public PSFPSCoreTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
-		ExtraModuleNames.Add("FPSGame");
+		ExtraModuleNames.Add("PSFPSCore");
 	}
 }

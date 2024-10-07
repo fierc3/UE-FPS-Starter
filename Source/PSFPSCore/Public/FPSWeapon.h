@@ -12,7 +12,7 @@
  */
 
 UCLASS()
-class FPSGAME_API AFPSWeapon : public AActor
+class  AFPSWeapon : public AActor
 {
 	GENERATED_BODY()
 

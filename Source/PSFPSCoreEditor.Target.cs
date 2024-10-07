@@ -3,12 +3,12 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class FPSGameEditorTarget : TargetRules
+public class PSFPSCoreEditorTarget : TargetRules
 {
-	public FPSGameEditorTarget(TargetInfo Target) : base(Target)
+	public PSFPSCoreEditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
-		ExtraModuleNames.Add("FPSGame");
+		ExtraModuleNames.Add("PSFPSCore");
 
 		DefaultBuildSettings = BuildSettingsVersion.Latest;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_2;

@@ -8,7 +8,7 @@
 #include "EventHandlerActor.h"
 #include "PsEvent.h"
 
-class FPSGAME_API EventBusHelper
+class  EventBusHelper
 {
 public:
     static AEventHandlerActor* SetupAndRegisterEventHandler(UWorld* World, AActor* Owner, TFunction<void(UPsEvent*)> ReceiveFunc);
