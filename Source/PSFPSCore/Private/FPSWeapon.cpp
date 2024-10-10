@@ -74,11 +74,6 @@ void AFPSWeapon::Fire()
 	UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 
 	// Get the animation object for the arms mesh
-	UAnimInstance* AnimInstance = Mesh1PComponent->GetAnimInstance();
-	if (AnimInstance)
-	{
-		AnimInstance->PlaySlotAnimationAsDynamicMontage(FireAnimation, "Arms", 0.0f);
-	}
 
 	if (MuzzleFlash) {
 		FVector MuzzleLocation = StaticMeshComponent->GetSocketLocation("Muzzle");
@@ -86,6 +81,14 @@ void AFPSWeapon::Fire()
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleFlash, MuzzleLocation, MuzzleRotation);
 	}
 
+	UAnimInstance* AnimInstance = Mesh1PComponent->GetAnimInstance();
+	if (AnimInstance)
+	{
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateWeakLambda(this, [this, AnimInstance]() {
+			AnimInstance->PlaySlotAnimationAsDynamicMontage(FireAnimation, "Arms", 0.0f);
+		}), delayAfterMuzzle, false);
+	}
 }
 
 void AFPSWeapon::ChangeProjectile(int index)

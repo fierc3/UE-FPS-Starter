@@ -46,14 +46,17 @@ public:
 
 	/** Sound to play each time we fire */
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
-		USoundBase* FireSound;
+	USoundBase* FireSound;
 
 	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
-		UAnimSequence* FireAnimation;
+	UAnimSequence* FireAnimation;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	UParticleSystem* MuzzleFlash;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	float delayAfterMuzzle = 0.02f;
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void ChangeProjectile(int index);
