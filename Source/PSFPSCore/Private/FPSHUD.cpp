@@ -30,7 +30,10 @@ AFPSHUD::AFPSHUD()
 void AFPSHUD::BeginPlay()
 {
 	PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	LogHelper::PrintLog("HUD Started for " + PlayerCharacter->GetName());
+
+	if (PlayerCharacter) {
+		LogHelper::PrintLog("HUD Started for " + PlayerCharacter->GetName());
+	}
 
 	EventHandler = EventBusHelper::SetupAndRegisterEventHandler(GetWorld(), this, [this](UPsEvent* Event) {
 		if (Event->Target->IsA(AEnemyBase::StaticClass())) {
