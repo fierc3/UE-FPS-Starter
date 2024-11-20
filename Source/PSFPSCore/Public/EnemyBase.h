@@ -45,4 +45,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BlueprintPostHit(UPsEvent* Event);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BlueprintIsDying(UPsEvent* Event);
 };

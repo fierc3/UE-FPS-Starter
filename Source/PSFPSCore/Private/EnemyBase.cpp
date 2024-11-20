@@ -48,6 +48,10 @@ void AEnemyBase::Tick(float DeltaTime)
 		LogHelper::PrintLog(TEXT("Enemy DYING"));
 		IsDying = true; 
 		Health = 1; // Or else he instantly goes in to death on next tick
+		UPsEvent* Event = NewObject<UPsEvent>(this);
+		Event->EventType = EEventType::IsDying;
+		Event->Value = 1.0f;
+		BlueprintIsDying(Event);
 	}
 }
 

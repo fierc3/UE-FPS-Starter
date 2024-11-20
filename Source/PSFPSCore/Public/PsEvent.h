@@ -13,6 +13,7 @@ enum class EEventType : uint8
 {
     Hit     UMETA(DisplayName = "Hit"),
     Action  UMETA(DisplayName = "Action"),
+    IsDying UMETA(DisplayName = "Is Dying")
     // Add other event types as needed
 };
 
