@@ -36,6 +36,10 @@ AFPSCharacter::AFPSCharacter()
 	Mesh1PComponent->SetRelativeLocation(FVector(0, 0, -160.0f));
 }
 
+FGenericTeamId AFPSCharacter::GetGenericTeamId() const
+{
+	return FGenericTeamId(1);
+}
 
 void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

@@ -11,6 +11,7 @@
 #include <FPSWeapon.h>
 #include "FPSAbility.h"
 #include <Components/TimelineComponent.h>
+#include <Runtime/AIModule/Classes/GenericTeamAgentInterface.h>
 #include "FPSCharacter.generated.h"
 
 class UInputMappingContext;
@@ -25,7 +26,7 @@ class AEventHandlerActor;
 
 
 UCLASS()
-class AFPSCharacter : public ACharacter
+class AFPSCharacter : public ACharacter, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -80,6 +81,8 @@ protected:
 
 public:
 	AFPSCharacter();
+
+	virtual FGenericTeamId GetGenericTeamId() const override;
 
 	UFUNCTION(BlueprintCallable, Category = "Dash")
 	UCooldownHelper* GetDashCooldown();

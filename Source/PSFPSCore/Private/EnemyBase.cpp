@@ -62,3 +62,26 @@ void AEnemyBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 }
 
+FGenericTeamId AEnemyBase::GetGenericTeamId() const
+{
+	return FGenericTeamId(100); // 100 for base Enemy
+}
+
+ETeamAttitude::Type AEnemyBase::GetTeamAttitudeTowards(const AActor& Other) const
+{
+	const uint8 TeamId = GetGenericTeamId();
+	if (const IGenericTeamAgentInterface* OtherTeamAgent = Cast<IGenericTeamAgentInterface>(&Other))
+	{
+		FGenericTeamId OtherTeamID = OtherTeamAgent->GetGenericTeamId();
+		if (OtherTeamID == 1)
+		{
+			return ETeamAttitude::Hostile;
+		}
+		else if (OtherTeamID > TeamId && OtherTeamID < (TeamId+100))
+		{
+			return ETeamAttitude::Friendly;
+		}
+	}
+	return ETeamAttitude::Neutral;
+}
+

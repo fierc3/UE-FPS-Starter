@@ -5,10 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "EventHandlerActor.h"
+#include <Runtime/AIModule/Classes/GenericTeamAgentInterface.h>
 #include "EnemyBase.generated.h"
 
 UCLASS()
-class AEnemyBase : public ACharacter
+class AEnemyBase : public ACharacter, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -30,6 +31,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual FGenericTeamId GetGenericTeamId() const override;
+	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float Health;
 
@@ -48,4 +52,10 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BlueprintIsDying(UPsEvent* Event);
+
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void BlueprintStartChase(UPsEvent* Event);
+
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void BlueprintStopChase(UPsEvent* Event);
 };

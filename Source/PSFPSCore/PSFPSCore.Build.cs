@@ -15,6 +15,7 @@ public class PSFPSCore : ModuleRules
 			"Engine", 
 			"InputCore",
 			"EnhancedInput",
+			"AIModule"
 		});
 	}
 }
