@@ -112,6 +112,7 @@ void AFPSWeapon::OnReloadAnimationFinished()
 {
 	IsReloading = false;
 	CurrentBullets = MaxBullets;
+	BlueprintReloadEnd();
 }
 
 void AFPSWeapon::Reload()
@@ -133,5 +134,6 @@ void AFPSWeapon::Reload()
 		// Set a timer to call OnReloadAnimationFinished after the animation duration
 		GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &AFPSWeapon::OnReloadAnimationFinished, AnimationDuration, false);
 	}
+	BlueprintReloadStart();
 	UGameplayStatics::PlaySoundAtLocation(this, ReloadSound, GetActorLocation());
 }
