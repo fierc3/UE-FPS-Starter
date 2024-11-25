@@ -22,6 +22,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	// -- Events -- //
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Events")
 	AEventHandlerActor* EventHandler;
 
 public:	

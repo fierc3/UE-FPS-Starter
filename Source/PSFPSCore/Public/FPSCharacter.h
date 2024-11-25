@@ -82,6 +82,9 @@ protected:
 public:
 	AFPSCharacter();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float Health;
+
 	virtual FGenericTeamId GetGenericTeamId() const override;
 
 	UFUNCTION(BlueprintCallable, Category = "Dash")
@@ -151,6 +154,9 @@ public:
 	UCameraComponent* GetFirstPersonCameraComponent() const { return CameraComponent; }
 
 	AFPSWeapon* GetWeapon() const { return Weapon; }
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BlueprintPostHit(UPsEvent* Event);
 
 private:
 	bool IsShooting = false;

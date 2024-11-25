@@ -271,6 +271,16 @@ void AFPSCharacter::BeginPlay()
 		LogHelper::PrintLog("Failed to find Active_Weapon component");
 	}
 
+	EventHandler = EventBusHelper::SetupAndRegisterEventHandler(GetWorld(), this, [this](UPsEvent* Event) {
+		// check if its actually me?
+		if (Event->Target != this) {
+			return;
+		}
+		Health -= 10.0f;
+		LogHelper::PrintLog(FString::Printf(TEXT("Health: %f"), Health));
+		BlueprintPostHit(Event);
+	});
+
 }
 
 TArray<TSubclassOf<AFPSAbility>> AFPSCharacter::GetAbilities()
