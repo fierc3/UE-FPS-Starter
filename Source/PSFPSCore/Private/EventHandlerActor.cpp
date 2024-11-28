@@ -23,7 +23,6 @@ AEventHandlerActor::AEventHandlerActor(AEventBusActor* InBus)
 // Method to send a message
 void AEventHandlerActor::Send(UPsEvent* ev)
 {
-    LogHelper::PrintLog(TEXT("### SENDING"));
     Bus->SendToAll(ev);  // Send to all registered handlers through the Bus
 }
 

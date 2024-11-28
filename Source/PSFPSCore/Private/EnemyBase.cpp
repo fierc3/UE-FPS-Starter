@@ -25,7 +25,7 @@ void AEnemyBase::BeginPlay()
 			return;
 		}
 		Health -= 10.0f;
-		LogHelper::PrintLog(FString::Printf(TEXT("Health: %f"), Health));
+		//LogHelper::PrintLog(FString::Printf(TEXT("Health: %f"), Health));
 		BlueprintPostHit(Event);
 	});	
 }
@@ -38,14 +38,14 @@ void AEnemyBase::Tick(float DeltaTime)
 	if (Health < 1) {
 
 		if (IsDying) {
-			LogHelper::PrintLog(TEXT("Enemy DEAD"));
+			//LogHelper::PrintLog(TEXT("Enemy DEAD"));
 			IsDead = true;
 			IsDying = false;
 			// play destroy animation
 			Destroy();
 			return;
 		}
-		LogHelper::PrintLog(TEXT("Enemy DYING"));
+		//LogHelper::PrintLog(TEXT("Enemy DYING"));
 		IsDying = true; 
 		Health = 1; // Or else he instantly goes in to death on next tick
 		UPsEvent* Event = NewObject<UPsEvent>(this);

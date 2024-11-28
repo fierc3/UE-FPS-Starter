@@ -40,9 +40,9 @@ void AFPSHUD::BeginPlay()
 			AEnemyBase* Enemy = Cast<AEnemyBase>(Event->Target);
 			if (Enemy)
 			{
-				LogHelper::PrintLog(FString::Printf(TEXT("+Enemy: %f"), Enemy->Health));
+				LogHelper::PrintLog(FString::Printf(TEXT("Enemy health, during hitmarker: %f"), Enemy->Health));
 
-				if (Enemy->Health < 0) {
+				if (Enemy->Health < 0 || Enemy->IsDying) {
 					HitmarkerColor = FLinearColor::Red;
 				}
 				else {
