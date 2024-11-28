@@ -9,5 +9,11 @@ public class PSFPSCoreTarget : TargetRules
 	{
 		Type = TargetType.Game;
 		ExtraModuleNames.Add("PSFPSCore");
-	}
+
+        // Allow overriding the build environment
+        bOverrideBuildEnvironment = true;
+
+        // Add your custom setting here, for example:
+        GlobalDefinitions.Add("bStrictConformanceMode=0");
+    }
 }
