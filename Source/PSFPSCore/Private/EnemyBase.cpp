@@ -25,7 +25,7 @@ void AEnemyBase::BeginPlay()
 			return;
 		}
 		Health -= 10.0f;
-		LogHelper::PrintLog(FString::Printf(TEXT("Health: %f"), Health));
+		//LogHelper::PrintLog(FString::Printf(TEXT("Health: %f"), Health));
 		BlueprintPostHit(Event);
 	});	
 }
@@ -38,16 +38,20 @@ void AEnemyBase::Tick(float DeltaTime)
 	if (Health < 1) {
 
 		if (IsDying) {
-			LogHelper::PrintLog(TEXT("Enemy DEAD"));
+			//LogHelper::PrintLog(TEXT("Enemy DEAD"));
 			IsDead = true;
 			IsDying = false;
 			// play destroy animation
 			Destroy();
 			return;
 		}
-		LogHelper::PrintLog(TEXT("Enemy DYING"));
+		//LogHelper::PrintLog(TEXT("Enemy DYING"));
 		IsDying = true; 
 		Health = 1; // Or else he instantly goes in to death on next tick
+		UPsEvent* Event = NewObject<UPsEvent>(this);
+		Event->EventType = EEventType::IsDying;
+		Event->Value = 1.0f;
+		BlueprintIsDying(Event);
 	}
 }
 
@@ -56,5 +60,28 @@ void AEnemyBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+FGenericTeamId AEnemyBase::GetGenericTeamId() const
+{
+	return FGenericTeamId(100); // 100 for base Enemy
+}
+
+ETeamAttitude::Type AEnemyBase::GetTeamAttitudeTowards(const AActor& Other) const
+{
+	const uint8 TeamId = GetGenericTeamId();
+	if (const IGenericTeamAgentInterface* OtherTeamAgent = Cast<IGenericTeamAgentInterface>(&Other))
+	{
+		FGenericTeamId OtherTeamID = OtherTeamAgent->GetGenericTeamId();
+		if (OtherTeamID == 1)
+		{
+			return ETeamAttitude::Hostile;
+		}
+		else if (OtherTeamID > TeamId && OtherTeamID < (TeamId+100))
+		{
+			return ETeamAttitude::Friendly;
+		}
+	}
+	return ETeamAttitude::Neutral;
 }
 

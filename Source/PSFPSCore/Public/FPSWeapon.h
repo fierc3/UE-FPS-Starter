@@ -96,6 +96,12 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
 	bool IsReloading = false;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void BlueprintReloadStart();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void BlueprintReloadEnd();
+
 private:
 	FTimerHandle ReloadTimerHandle;
 	int CurrentProjectile = 0;

@@ -30,16 +30,19 @@ AFPSHUD::AFPSHUD()
 void AFPSHUD::BeginPlay()
 {
 	PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	LogHelper::PrintLog("HUD Started for " + PlayerCharacter->GetName());
+
+	if (PlayerCharacter) {
+		LogHelper::PrintLog("HUD Started for " + PlayerCharacter->GetName());
+	}
 
 	EventHandler = EventBusHelper::SetupAndRegisterEventHandler(GetWorld(), this, [this](UPsEvent* Event) {
 		if (Event->Target->IsA(AEnemyBase::StaticClass())) {
 			AEnemyBase* Enemy = Cast<AEnemyBase>(Event->Target);
 			if (Enemy)
 			{
-				LogHelper::PrintLog(FString::Printf(TEXT("+Enemy: %f"), Enemy->Health));
+				LogHelper::PrintLog(FString::Printf(TEXT("Enemy health, during hitmarker: %f"), Enemy->Health));
 
-				if (Enemy->Health < 0) {
+				if (Enemy->Health < 0 || Enemy->IsDying) {
 					HitmarkerColor = FLinearColor::Red;
 				}
 				else {

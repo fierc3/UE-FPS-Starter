@@ -36,6 +36,10 @@ AFPSCharacter::AFPSCharacter()
 	Mesh1PComponent->SetRelativeLocation(FVector(0, 0, -160.0f));
 }
 
+FGenericTeamId AFPSCharacter::GetGenericTeamId() const
+{
+	return FGenericTeamId(1);
+}
 
 void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -266,6 +270,16 @@ void AFPSCharacter::BeginPlay()
 	{
 		LogHelper::PrintLog("Failed to find Active_Weapon component");
 	}
+
+	EventHandler = EventBusHelper::SetupAndRegisterEventHandler(GetWorld(), this, [this](UPsEvent* Event) {
+		// check if its actually me?
+		if (Event->Target != this) {
+			return;
+		}
+		Health -= Event->Value;
+		LogHelper::PrintLog(FString::Printf(TEXT("Health: %f"), Health));
+		BlueprintPostHit(Event);
+	});
 
 }
 
