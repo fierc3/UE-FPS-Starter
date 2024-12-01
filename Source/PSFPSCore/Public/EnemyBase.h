@@ -52,7 +52,10 @@ public:
 	void BlueprintPostHit(UPsEvent* Event);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void BlueprintIsDying(UPsEvent* Event);
+	void BlueprintIsDying(UPsEvent* Event);	
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void BlueprintIsDead();
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void BlueprintStartChase(UPsEvent* Event);

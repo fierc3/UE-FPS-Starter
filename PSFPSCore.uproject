@@ -13,5 +13,15 @@
 				"CoreUObject"
 			]
 		}
+	],
+	"Plugins": [
+		{
+			"Name": "GeometryScripting",
+			"Enabled": true
+		},
+		{
+			"Name": "SkeletalMerging",
+			"Enabled": true
+		}
 	]
 }

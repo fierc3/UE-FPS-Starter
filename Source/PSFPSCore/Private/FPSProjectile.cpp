@@ -74,6 +74,26 @@ void AFPSProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 {
 	if ((OtherActor) && (OtherActor != this) && OtherActor->IsA(AEnemyBase::StaticClass())) {
 
+		FName Bone = "";
+		USkeletalMeshComponent* SkeletalMesh = Cast<USkeletalMeshComponent>(OtherComp);
+		if (SkeletalMesh)
+		{
+			// Get the bone name from the hit result
+			FName HitBoneName = Hit.BoneName;
+			if (HitBoneName != NAME_None)
+			{
+				LogHelper::PrintLog(FString::Printf(TEXT("Hit bone: %s"), *HitBoneName.ToString()));
+				Bone = HitBoneName;
+			}
+			else
+			{
+				LogHelper::PrintLog("No bone hit or hit on non-skeletal mesh.");
+			}
+		}
+		else {
+			LogHelper::PrintLog("No skeletal Mesh.");
+		}
+
 		LogHelper::PrintLog(OtherActor->GetName());
 		UPsEvent* HitEvent = NewObject<UPsEvent>(this);
 		HitEvent->EventType = EEventType::Hit;
@@ -81,6 +101,7 @@ void AFPSProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 		HitEvent->Origin = this;
 		HitEvent->Target = OtherActor;
 		HitEvent->HitResult = Hit;
+		HitEvent->AdditionalData = Bone;
 		EventHandler->Send(HitEvent);
 	}	
 

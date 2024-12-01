@@ -35,14 +35,15 @@ void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (Health < 1) {
+	if (Health < 1 && !IsDead) {
 
 		if (IsDying) {
 			//LogHelper::PrintLog(TEXT("Enemy DEAD"));
 			IsDead = true;
 			IsDying = false;
 			// play destroy animation
-			Destroy();
+			//Destroy();
+			BlueprintIsDead();
 			return;
 		}
 		//LogHelper::PrintLog(TEXT("Enemy DYING"));
