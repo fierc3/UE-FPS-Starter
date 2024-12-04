@@ -22,6 +22,7 @@
 
 AFPSCharacter::AFPSCharacter()
 {
+	/*
 	// Create a CameraComponent	
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	CameraComponent->SetupAttachment(GetCapsuleComponent());
@@ -34,6 +35,7 @@ AFPSCharacter::AFPSCharacter()
 	Mesh1PComponent->CastShadow = false;
 	Mesh1PComponent->SetRelativeRotation(FRotator(2.0f, -15.0f, 5.0f));
 	Mesh1PComponent->SetRelativeLocation(FVector(0, 0, -160.0f));
+	*/
 }
 
 FGenericTeamId AFPSCharacter::GetGenericTeamId() const
@@ -43,6 +45,8 @@ FGenericTeamId AFPSCharacter::GetGenericTeamId() const
 
 void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+	
+	/*
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 
 	EnhancedInputComponent->BindAction(Input_Move, ETriggerEvent::Triggered, this, &AFPSCharacter::MoveInput);
@@ -52,8 +56,10 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Triggered, this, &AFPSCharacter::PreJump);
 	EnhancedInputComponent->BindAction(Input_Fire, ETriggerEvent::Started, this, &AFPSCharacter::StartShooting);
 	EnhancedInputComponent->BindAction(Input_Fire, ETriggerEvent::Completed, this, &AFPSCharacter::StopShooting);
-	EnhancedInputComponent->BindAction(Input_Crouch, ETriggerEvent::Triggered, this, &AFPSCharacter::Crouch);
+	EnhancedInputComponent->BindAction(Input_Crouch, ETriggerEvent::Triggered, this, &AFPSCharacter::ToggleCrouch);
 	EnhancedInputComponent->BindAction(Input_Dash, ETriggerEvent::Triggered, this, &AFPSCharacter::Dash);
+
+	*/
 
 	const APlayerController* PC = GetController<APlayerController>();
 	const ULocalPlayer* LP = PC->GetLocalPlayer();
@@ -65,9 +71,11 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 void AFPSCharacter::Tick(float DeltaTime) {
 	
+	/*
 	if (IsShooting) {
 		Fire();
 	}
+	*/
 }
 
 void AFPSCharacter::Landed(const FHitResult& Hit)
@@ -106,10 +114,10 @@ void AFPSCharacter::OnJumped_Implementation()
 	}
 }
 
-void AFPSCharacter::Fire() // Input Action
+bool AFPSCharacter::Fire() // Input Action
 {
-	if (IsBlocked) return; // Character is currently blocked and can't shoot
-	GetWeapon()->Fire();
+	if (IsBlocked) return false; // Character is currently blocked and can't shoot
+	return GetWeapon()->Fire();
 }
 
 void AFPSCharacter::StartShooting()
@@ -125,7 +133,7 @@ void AFPSCharacter::StopShooting()
 }
 
 
-void AFPSCharacter::Crouch()
+void AFPSCharacter::ToggleCrouch()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Crouch Called"));
 	LogHelper::PrintLog(TEXT("Crouch Called"));
@@ -273,6 +281,7 @@ void AFPSCharacter::BeginPlay()
 
 	EventHandler = EventBusHelper::SetupAndRegisterEventHandler(GetWorld(), this, [this](UPsEvent* Event) {
 		// check if its actually me?
+		LogHelper::PrintLog("!!!Checking " + Event->Target->GetName());
 		if (Event->Target != this) {
 			return;
 		}

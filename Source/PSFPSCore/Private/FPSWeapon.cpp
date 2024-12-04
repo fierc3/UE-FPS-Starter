@@ -5,6 +5,7 @@
 #include <Kismet/GameplayStatics.h>
 #include "EventBusHelper.h"
 #include "GameFramework/Character.h"
+#include <FPSCharacter.h>
 
 
 AFPSWeapon::AFPSWeapon()
@@ -33,15 +34,16 @@ void AFPSWeapon::BeginPlay()
 	}
 }
 
-void AFPSWeapon::Fire()
+
+bool AFPSWeapon::Fire()
 {
-	if (IsReloading) return; // Can only fire when fully reloaded
+	if (IsReloading) return false; // Can only fire when fully reloaded
 
 	if (CurrentBullets < 1)
 	{
 		FireEmptyBullet();
-		Reload();
-		return;
+		//Reload();
+		return false;
 	}
 
 	// Check if projectile class exists
@@ -51,7 +53,7 @@ void AFPSWeapon::Fire()
 
 		if (GetWorld()->GetTimeSeconds() - LastFireTime < FireRate && FireRate > 0 && LastFireTime > 0)
 		{
-			return;
+			return false;
 		}
 
 		LastFireTime = GetWorld()->GetTimeSeconds();
@@ -69,6 +71,17 @@ void AFPSWeapon::Fire()
 		CurrentBullets -= 1;
 
 		OnWeaponFired(); // So the blueprint can do some stuff after a weapon has been fired
+		
+		ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+		if (PlayerCharacter)
+		{
+			// Cast to AFPSCharacter
+			AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(PlayerCharacter);
+			if (FPSCharacter)
+			{
+				FPSCharacter->OnWeaponFired();
+			}
+		}
 	}
 
 	UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
@@ -81,6 +94,9 @@ void AFPSWeapon::Fire()
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleFlash, MuzzleLocation, MuzzleRotation);
 	}
 
+	return true;
+
+	/*
 	UAnimInstance* AnimInstance = Mesh1PComponent->GetAnimInstance();
 	if (AnimInstance)
 	{
@@ -89,6 +105,7 @@ void AFPSWeapon::Fire()
 			AnimInstance->PlaySlotAnimationAsDynamicMontage(FireAnimation, "Arms", 0.0f);
 		}), delayAfterMuzzle, false);
 	}
+	*/
 }
 
 void AFPSWeapon::ChangeProjectile(int index)
@@ -122,7 +139,10 @@ void AFPSWeapon::Reload()
 		return;
 	}
 
-	UAnimInstance* AnimInstance = Mesh1PComponent->GetAnimInstance();
+	IsReloading = true;
+	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &AFPSWeapon::OnReloadAnimationFinished, 1, false);
+
+	/*UAnimInstance* AnimInstance = Mesh1PComponent->GetAnimInstance();
 	if (AnimInstance && ReloadAnimation)
 	{
 		IsReloading = true;
@@ -133,7 +153,7 @@ void AFPSWeapon::Reload()
 
 		// Set a timer to call OnReloadAnimationFinished after the animation duration
 		GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &AFPSWeapon::OnReloadAnimationFinished, AnimationDuration, false);
-	}
+	}*/
 	BlueprintReloadStart();
 	UGameplayStatics::PlaySoundAtLocation(this, ReloadSound, GetActorLocation());
 }

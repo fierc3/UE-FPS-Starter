@@ -102,6 +102,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
 	float ActiveAbility = 0;
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon")
+	void OnWeaponFired();
+
 protected:
 
 	void MoveInput(const FInputActionValue& InputValue);
@@ -114,13 +117,20 @@ protected:
 
 	virtual void Tick(float DeltaTime) override;
 
-	void Fire();
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	bool Fire();
 
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void StartShooting();
 
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void StopShooting();
 
-	void Crouch();
+	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
+	bool IsShooting = false;
+
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	void ToggleCrouch();
 	
 	void Dash();
 
@@ -149,17 +159,23 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Mesh")
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1PComponent; }
 
+	UFUNCTION(BlueprintCallable, Category = "Mesh")
+	void SetMesh1P(USkeletalMeshComponent* NewMesh) { Mesh1PComponent = NewMesh; }
+
 	/** Returns FirstPersonCameraComponent subobject **/
 	UFUNCTION(BlueprintCallable, Category = "Camera")
 	UCameraComponent* GetFirstPersonCameraComponent() const { return CameraComponent; }
 
 	AFPSWeapon* GetWeapon() const { return Weapon; }
 
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void SetWeapon(AFPSWeapon* NewWeapon) { Weapon = NewWeapon; }
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void BlueprintPostHit(UPsEvent* Event);
 
 private:
-	bool IsShooting = false;
+	
 
 	// <-- Dash -->
 	bool IsDashing = false;

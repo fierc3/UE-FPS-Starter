@@ -24,7 +24,7 @@ void AEnemyBase::BeginPlay()
 		if (Event->Target != this) {
 			return;
 		}
-		Health -= 10.0f;
+		Health -= Event->Value;
 		//LogHelper::PrintLog(FString::Printf(TEXT("Health: %f"), Health));
 		BlueprintPostHit(Event);
 	});	
