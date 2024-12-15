@@ -21,3 +21,15 @@ UPsEvent* UPsBpFunctions::CreatePsEvent(EEventType InEventType, float InValue, A
 	FireEvent->AdditionalData = InAdditionalData;
     return FireEvent;
 }
+
+void UPsBpFunctions::StartTimer(UObject* WorldContextObject, float Duration, FStartTimerCompleteDelegate InTimerCompleteDelegate)
+{
+    if (WorldContextObject)
+    {
+        FTimerDelegate TimerDelegate;
+        TimerDelegate.BindUFunction(InTimerCompleteDelegate.GetUObject(), InTimerCompleteDelegate.GetFunctionName());
+
+        FTimerHandle TimerHandle;
+        WorldContextObject->GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, Duration, false);
+    }
+}
