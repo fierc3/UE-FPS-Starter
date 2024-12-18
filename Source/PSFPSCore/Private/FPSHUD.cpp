@@ -38,7 +38,7 @@ void AFPSHUD::BeginPlay()
 	EventHandler = EventBusHelper::SetupAndRegisterEventHandler(GetWorld(), this, [this](UPsEvent* Event) {
 		if (Event->Target->IsA(AEnemyBase::StaticClass())) {
 			AEnemyBase* Enemy = Cast<AEnemyBase>(Event->Target);
-			if (Enemy)
+			if (Enemy && !Enemy->IsDead)
 			{
 				LogHelper::PrintLog(FString::Printf(TEXT("Enemy health, during hitmarker: %f"), Enemy->Health));
 

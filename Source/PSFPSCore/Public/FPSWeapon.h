@@ -33,11 +33,13 @@ public:
 	virtual void BeginPlay() override;
 
 	/** Fires a projectile. */
-	void Fire();
+	bool Fire();
 
 	/** Returns Mesh1P subobject **/
 	UStaticMeshComponent* GetGunMesh() const { return GunMeshComponent; }
+	UFUNCTION(BlueprintCallable, Category = "Holder")
 	void SetMesh1PComponent(USkeletalMeshComponent* NewMesh1PComponent)	{ Mesh1PComponent = NewMesh1PComponent; }
+	UFUNCTION(BlueprintCallable, Category = "Holder")
 	void SetAHolder(ACharacter* NewAHolder) { AHolder = NewAHolder; }
 
 	/** Projectile class to spawn */
@@ -74,10 +76,10 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		void Reload();
 
-	UPROPERTY(EditAnywhere, Category = "Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 		int MaxBullets = 6.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 		int CurrentBullets = MaxBullets;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
